@@ -40,12 +40,12 @@
 
             <!-- Right-side icons -->
             <div class="d-flex align-items-center gap-3">
-                <a href="register.php" class="nav-icon-link" title="Register">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <a href="login.php" class="btn btn-outline-accent btn-sm nav-auth-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
                     </svg>
+                    Sign In / Register
                 </a>
-                <a href="login.php" class="btn btn-outline-accent btn-sm ms-1">Sign In</a>
             </div>
         </div>
     </div>

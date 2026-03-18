@@ -15,34 +15,23 @@
                 </div>
             </div>
             <!-- Explore -->
-            <div class="col-lg-2 col-md-3 col-6">
+            <div class="col-lg-2 col-md-3 col-6 ms-auto">
                 <h6 class="footer-col-title">Explore</h6>
                 <ul class="footer-links">
-                    <li><a href="#">All Events</a></li>
                     <li><a href="#">Concerts</a></li>
                     <li><a href="#">Festivals</a></li>
+                    <li><a href="#">Theatre & Arts</a></li>
                     <li><a href="#">Sports</a></li>
-                    <li><a href="#">Theatre</a></li>
-                </ul>
-            </div>
-            <!-- Company -->
-            <div class="col-lg-2 col-md-3 col-6">
-                <h6 class="footer-col-title">Company</h6>
-                <ul class="footer-links">
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Press</a></li>
-                    <li><a href="#">Careers</a></li>
-                    <li><a href="#">Partners</a></li>
                 </ul>
             </div>
             <!-- Support -->
             <div class="col-lg-2 col-md-3 col-6">
                 <h6 class="footer-col-title">Support</h6>
                 <ul class="footer-links">
-                    <li><a href="#">Help Centre</a></li>
-                    <li><a href="#">Refund Policy</a></li>
-                    <li><a href="#">Fan Guarantee</a></li>
-                    <li><a href="#">Accessibility</a></li>
+                    <li><a href="about_us.php">About Us</a></li>
+                    <li><a href="faq.php">Help Centre</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="terms_of_service.php">Terms of Service</a></li>
                 </ul>
             </div>
             <!-- Account -->
@@ -52,18 +41,12 @@
                     <li><a href="login.php">Sign In</a></li>
                     <li><a href="register.php">Register</a></li>
                     <li><a href="#">My Tickets</a></li>
-                    <li><a href="#">Preferences</a></li>
                 </ul>
             </div>
         </div>
 
         <div class="footer-bottom">
             <p><em>Copyright &copy; 2026 PULSE Events Pte. Ltd. All rights reserved.</em></p>
-            <div class="d-flex gap-3">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">Cookie Settings</a>
-            </div>
         </div>
     </div>
 </footer>
