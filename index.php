@@ -10,53 +10,10 @@
 
         <?php include "inc/header.inc.php" ?>
 
-        <!-- Search Bar -->
-        <div class="search-bar-section">
-            <div class="search-bar-inner">
-                <div class="search-field">
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                        <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/>
-                        <path d="M12 12L15.5 15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    </svg>
-                    <input type="text" placeholder="Search artist, event, or venue...">
-                </div>
-                <div class="search-select-wrap">
-                    <div class="search-select-inner">
-                        <label>Category</label>
-                        <select>
-                            <option>All Events</option>
-                            <option>Concerts</option>
-                            <option>Festivals</option>
-                            <option>Sports</option>
-                            <option>Theatre</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="search-select-wrap">
-                    <div class="search-select-inner">
-                        <label>Date</label>
-                        <select>
-                            <option>Any Date</option>
-                            <option>This Week</option>
-                            <option>This Month</option>
-                            <option>Next 3 Months</option>
-                        </select>
-                    </div>
-                </div>
-                <button class="search-submit-btn">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                        <circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1.5"/>
-                        <path d="M9 9L12.5 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    </svg>
-                    Find Events
-                </button>
-            </div>
-        </div>
-
         <main>
 
             <!-- Category Pills -->
-            <div class="container-fluid px-5 pt-4 pb-0">
+            <div class="container-fluid px-5 pt-5 pb-2">
                 <div class="category-pills-track">
                     <button class="cat-pill active">🔥 All Shows</button>
                     <button class="cat-pill">🎸 Rock &amp; Metal</button>
@@ -95,7 +52,7 @@
                                 <span class="meta-dot"></span>
                                 <span>Singapore Indoor Stadium</span>
                             </div>
-                            <a href="#" class="event-cta-btn">
+                            <a href="booking.php" class="event-cta-btn">
                                 Get Tickets
                                 <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
                                     <path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -118,7 +75,7 @@
                                 <span class="meta-dot"></span>
                                 <span>Sands Expo</span>
                             </div>
-                            <a href="#" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+                            <a href="booking.php" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
                         </div>
                         <div class="hot-badge">🔥 Selling Fast</div>
                     </div>
@@ -135,7 +92,7 @@
                                 <span class="meta-dot"></span>
                                 <span>The Star Theatre</span>
                             </div>
-                            <a href="#" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+                            <a href="booking.php" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
                         </div>
                         <div class="price-badge">From S$78</div>
                     </div>
@@ -152,7 +109,7 @@
                                 <span class="meta-dot"></span>
                                 <span>Star Performing Arts</span>
                             </div>
-                            <a href="#" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+                            <a href="booking.php" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
                         </div>
                         <div class="price-badge">From S$128</div>
                     </div>
@@ -169,14 +126,15 @@
                                 <span class="meta-dot"></span>
                                 <span>Esplanade Theatre</span>
                             </div>
-                            <a href="#" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+                            <a href="booking.php" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
                         </div>
                         <div class="price-badge">From S$68</div>
                     </div>
                 </div>
             </section>
 
-            <!-- Upcoming Shows -->
+            <!-- Upcoming Shows — white band for contrast against warm body -->
+            <div class="section-band">
             <section class="container-fluid px-5 py-5 fade-up">
                 <div class="d-flex justify-content-between align-items-end mb-4">
                     <div>
@@ -288,6 +246,7 @@
 
                 </div>
             </section>
+            </div><!-- /.section-band -->
 
             <!-- Promo Banner -->
             <div class="container-fluid px-5 pb-5 fade-up">

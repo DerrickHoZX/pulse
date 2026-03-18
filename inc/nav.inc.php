@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg pulse-navbar" id="pulseNav">
+<nav class="navbar navbar-expand-lg navbar-light pulse-navbar" id="pulseNav">
     <div class="container-fluid px-4">
         <!-- Brand Logo -->
         <a class="navbar-brand pulse-brand" href="index.php">
@@ -24,7 +24,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
-                    <ul class="dropdown-menu dropdown-menu-dark pulse-dropdown">
+                    <ul class="dropdown-menu pulse-dropdown">
                         <li><a class="dropdown-item" href="#">🎸 Concerts</a></li>
                         <li><a class="dropdown-item" href="#">🎪 Festivals</a></li>
                         <li><a class="dropdown-item" href="#">🎭 Theatre & Arts</a></li>
