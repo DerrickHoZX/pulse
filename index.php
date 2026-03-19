@@ -5,29 +5,9 @@
         <?php include "inc/head.inc.php" ?>
     </head>
     <body>
-
         <?php include "inc/nav.inc.php" ?>
-
         <?php include "inc/header.inc.php" ?>
-
         <main>
-
-            <!-- Category Pills -->
-            <div class="container-fluid px-5 pt-5 pb-2">
-                <div class="category-pills-track">
-                    <button class="cat-pill active">🔥 All Shows</button>
-                    <button class="cat-pill">🎸 Rock &amp; Metal</button>
-                    <button class="cat-pill">🎶 K-Pop &amp; J-Pop</button>
-                    <button class="cat-pill">🎤 Hip-Hop &amp; R&amp;B</button>
-                    <button class="cat-pill">🎹 Classical</button>
-                    <button class="cat-pill">🎧 Electronic / EDM</button>
-                    <button class="cat-pill">🎷 Jazz &amp; Blues</button>
-                    <button class="cat-pill">🎭 Theatre &amp; Arts</button>
-                    <button class="cat-pill">⚽ Sports</button>
-                    <button class="cat-pill">🎪 Festivals</button>
-                </div>
-            </div>
-
             <!-- Featured Events -->
             <section id="events" class="container-fluid px-5 py-5 fade-up">
                 <div class="d-flex justify-content-between align-items-end mb-4">
@@ -52,7 +32,7 @@
                                 <span class="meta-dot"></span>
                                 <span>Singapore Indoor Stadium</span>
                             </div>
-                            <a href="booking.php" class="event-cta-btn">
+                            <a href="#" class="event-cta-btn">
                                 Get Tickets
                                 <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
                                     <path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -75,7 +55,7 @@
                                 <span class="meta-dot"></span>
                                 <span>Sands Expo</span>
                             </div>
-                            <a href="booking.php" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+                            <a href="#" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
                         </div>
                         <div class="hot-badge">🔥 Selling Fast</div>
                     </div>
@@ -92,7 +72,7 @@
                                 <span class="meta-dot"></span>
                                 <span>The Star Theatre</span>
                             </div>
-                            <a href="booking.php" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+                            <a href="#" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
                         </div>
                         <div class="price-badge">From S$78</div>
                     </div>
@@ -109,7 +89,7 @@
                                 <span class="meta-dot"></span>
                                 <span>Star Performing Arts</span>
                             </div>
-                            <a href="booking.php" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+                            <a href="#" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
                         </div>
                         <div class="price-badge">From S$128</div>
                     </div>
@@ -126,15 +106,14 @@
                                 <span class="meta-dot"></span>
                                 <span>Esplanade Theatre</span>
                             </div>
-                            <a href="booking.php" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+                            <a href="#" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
                         </div>
                         <div class="price-badge">From S$68</div>
                     </div>
                 </div>
             </section>
 
-            <!-- Upcoming Shows — white band for contrast against warm body -->
-            <div class="section-band">
+            <!-- Upcoming Shows -->
             <section class="container-fluid px-5 py-5 fade-up">
                 <div class="d-flex justify-content-between align-items-end mb-4">
                     <div>
@@ -246,7 +225,6 @@
 
                 </div>
             </section>
-            </div><!-- /.section-band -->
 
             <!-- Promo Banner -->
             <div class="container-fluid px-5 pb-5 fade-up">
