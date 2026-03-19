@@ -1,42 +1,42 @@
 /* ============================================================
-   PULSE Events — main.css  (Navy / Red / Cream Premium Theme)
+   PULSE Events — main.css  (Dark Cinematic / Amber Gold Theme)
    ============================================================ */
 
 /* ---- Variables ---- */
 :root {
-    /* ---- Cream / Warm Palette ---- */
-    --pulse-bg:           #FAF7F2;   /* warm cream — primary page background */
-    --pulse-surface:      #FFFFFF;   /* pure white — cards, modals, list rows */
-    --pulse-surface-warm: #F4EFE6;   /* warm parchment — hero panel, tinted sections */
-    --pulse-surface-alt:  #EDE8DF;   /* deeper cream — newsletter, stats bands */
-    --pulse-card:         #F5F1EA;   /* subtle warm card fill */
-    --pulse-border:       #E2E8F0;   /* border */
-    --pulse-border-light: #EEF2F7;   /* lighter separator */
+    /* ---- Dark Warm Palette ---- */
+    --pulse-bg:           #13110E;   /* near-black warm — primary page background */
+    --pulse-surface:      #1C1916;   /* dark warm surface — cards, sections */
+    --pulse-surface-warm: #231F1A;   /* slightly lighter — hero panel, alt sections */
+    --pulse-surface-alt:  #2A2520;   /* warm dark band — newsletter, stats */
+    --pulse-card:         #252019;   /* card background */
+    --pulse-border:       #3A3228;   /* warm dark border */
+    --pulse-border-light: #302B23;   /* lighter separator */
 
     /* ---- Text ---- */
-    --pulse-text:         #14213D;   /* deep navy */
-    --pulse-text-soft:    #2D3F61;   /* secondary navy-blue */
-    --pulse-muted:        #64748B;   /* slate muted */
+    --pulse-text:         #F0EAD8;   /* warm off-white — primary text */
+    --pulse-text-soft:    #C8BFB0;   /* soft secondary text */
+    --pulse-muted:        #8C8279;   /* muted warm gray */
 
-    /* ---- Accent — vivid red as the single action color ---- */
-    --pulse-accent:       #D62839;   /* vivid red */
-    --pulse-accent-dark:  #B82233;   /* hover/pressed */
-    --pulse-accent-tint:  rgba(214,40,57,0.08);
+    /* ---- Accent — amber gold as the single action color ---- */
+    --pulse-accent:       #E8A020;   /* warm amber gold */
+    --pulse-accent-dark:  #C8880E;   /* hover/pressed */
+    --pulse-accent-tint:  rgba(232,160,32,0.12);
 
-    /* ---- Amber — "Hot" badges ---- */
-    --pulse-gold:         #b45309;
-    --pulse-gold-bg:      #fef3c7;
+    /* ---- "Hot" badges ---- */
+    --pulse-gold:         #E8A020;
+    --pulse-gold-bg:      rgba(232,160,32,0.14);
 
-    /* ---- Dark Hero / Page-Hero sections ---- */
-    --pulse-hero-bg:      #14213D;   /* deep navy */
-    --pulse-hero-surface: #1E3060;
-    --pulse-hero-border:  #2A4080;
-    --pulse-hero-text:    #F8F4EE;
-    --pulse-hero-muted:   rgba(248,244,238,0.65);
+    /* ---- Deep sections (hero panels, drawers) ---- */
+    --pulse-hero-bg:      #0A0906;   /* near black */
+    --pulse-hero-surface: #17140F;
+    --pulse-hero-border:  #2A2520;
+    --pulse-hero-text:    #F0EAD8;
+    --pulse-hero-muted:   rgba(240,234,216,0.55);
 
-    /* ---- Dark Footer ---- */
-    --pulse-footer-bg:     #0D1B2A;   /* very dark navy */
-    --pulse-footer-border: #1E3050;
+    /* ---- Footer ---- */
+    --pulse-footer-bg:     #080706;   /* deepest dark */
+    --pulse-footer-border: #1E1B15;
 
     /* ---- Legacy aliases ---- */
     --pulse-black:   var(--pulse-text);
@@ -53,10 +53,10 @@
     --radius-md:   8px;
     --radius-lg:   14px;
     --radius-pill: 100px;
-    /* Navy-tinted shadows */
-    --shadow-sm:   0 1px 3px rgba(20,33,61,0.06), 0 1px 2px rgba(20,33,61,0.04);
-    --shadow-md:   0 4px 16px rgba(20,33,61,0.10), 0 2px 6px rgba(20,33,61,0.06);
-    --shadow-lg:   0 8px 32px rgba(20,33,61,0.13), 0 4px 12px rgba(20,33,61,0.07);
+    /* Dark shadows */
+    --shadow-sm:   0 1px 3px rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.28);
+    --shadow-md:   0 4px 16px rgba(0,0,0,0.50), 0 2px 6px rgba(0,0,0,0.32);
+    --shadow-lg:   0 8px 32px rgba(0,0,0,0.60), 0 4px 12px rgba(0,0,0,0.38);
 
 }
 
@@ -85,8 +85,8 @@ a { color: inherit; }
 }
 
 .pulse-navbar.scrolled {
-    background: #0D1B2A;
-    box-shadow: 0 2px 20px rgba(13,27,42,0.45);
+    background: #080706;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.60);
     border-bottom-color: rgba(255,255,255,0.08);
 }
 
@@ -280,13 +280,13 @@ a { color: inherit; }
     position: relative;
 }
 
-/* Accent top strip — navy brand separator */
+/* Accent top strip — amber brand separator */
 .hero-content-panel::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 4px;
-    background: linear-gradient(to right, var(--pulse-accent) 0%, #D62839 40%, transparent 100%);
+    height: 3px;
+    background: linear-gradient(to right, var(--pulse-accent) 0%, var(--pulse-accent) 50%, transparent 100%);
     pointer-events: none;
 }
 
@@ -758,7 +758,7 @@ a { color: inherit; }
     align-items: center;
     gap: 10px;
     font-size: 0.72rem;
-    color: rgba(240,237,232,0.65);
+    color: rgba(240,234,216,0.65);
     margin-bottom: 14px;
     flex-wrap: wrap;
 }
@@ -1059,7 +1059,7 @@ a { color: inherit; }
     font-size: 0.7rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(240,237,232,0.58);
+    color: rgba(240,234,216,0.58);
     margin-top: 4px;
 }
 
@@ -1134,7 +1134,7 @@ a { color: inherit; }
 }
 
 .footer-desc {
-    color: rgba(248,244,238,0.50);
+    color: rgba(240,234,216,0.50);
     font-size: 0.84rem;
     line-height: 1.75;
     font-weight: 300;
@@ -1147,7 +1147,7 @@ a { color: inherit; }
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(248,244,238,0.45);
+    color: rgba(240,234,216,0.45);
     text-decoration: none;
     font-size: 0.7rem;
     font-weight: 600;
@@ -1178,7 +1178,7 @@ a { color: inherit; }
     gap: 11px;
 }
 .footer-links a {
-    color: rgba(248,244,238,0.45);
+    color: rgba(240,234,216,0.45);
     text-decoration: none;
     font-size: 0.84rem;
     font-weight: 300;
@@ -1197,12 +1197,12 @@ a { color: inherit; }
 }
 .footer-bottom p {
     font-size: 0.72rem;
-    color: rgba(248,244,238,0.35);
+    color: rgba(240,234,216,0.38);
     margin: 0;
 }
 .footer-bottom a {
     font-size: 0.72rem;
-    color: rgba(248,244,238,0.35);
+    color: rgba(240,234,216,0.38);
     text-decoration: none;
     transition: color 0.2s;
 }
