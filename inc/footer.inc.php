@@ -30,7 +30,7 @@
                 <ul class="footer-links">
                     <li><a href="about_us.php">About Us</a></li>
                     <li><a href="faq.php">Help Centre</a></li>
-                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="contact.php">Contact Us</a></li>
                     <li><a href="terms_of_service.php">Terms of Service</a></li>
                 </ul>
             </div>

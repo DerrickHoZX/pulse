@@ -246,8 +246,8 @@
                             <h3 class="faq-contact-title">Still need help?</h3>
                             <p class="faq-contact-sub">Can't find what you're looking for? Our support team is here for you.</p>
                         </div>
-                        <a href="mailto:support@pulseevents.sg" class="btn btn-accent">
-                            Contact Support
+                        <a href="contact.php" class="btn btn-accent">
+                            Contact Us
                             <svg width="13" height="13" viewBox="0 0 14 14" fill="none" class="ms-2">
                                 <path d="M2 7H12M12 7L8 3M12 7L8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                             </svg>

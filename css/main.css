@@ -1458,3 +1458,173 @@ a { color: inherit; }
     flex-shrink: 0;
 }
 .hero-search button:hover { background: #4239a6; }
+
+/* ---- Contact Page ---- */
+.contact-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-bottom: 80px;
+}
+
+.contact-form-col .form-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--pulse-muted);
+    margin-bottom: 8px;
+}
+
+.contact-form-col .form-control {
+    background: var(--pulse-card);
+    border: 1px solid var(--pulse-border);
+    border-radius: 0;
+    color: var(--pulse-white);
+    padding: 12px 16px;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    transition: border-color 0.2s;
+    width: 100%;
+}
+
+.contact-form-col .form-control:focus {
+    background: var(--pulse-card);
+    border-color: var(--pulse-accent);
+    color: var(--pulse-white);
+    box-shadow: 0 0 0 3px rgba(82,71,184,0.12);
+    outline: none;
+}
+
+.contact-form-col .form-control::placeholder { color: #555; }
+
+.contact-form-col select.form-control option {
+    background: var(--pulse-surface);
+    color: var(--pulse-white);
+}
+
+.contact-form-col textarea.form-control { resize: vertical; min-height: 140px; }
+
+.required-star { color: var(--pulse-accent); }
+.contact-optional { color: var(--pulse-muted); font-size: 0.75em; text-transform: none; letter-spacing: 0; }
+.contact-char-hint { font-size: 0.68rem; color: var(--pulse-muted); margin-top: 6px; }
+
+.contact-info-card {
+    background: var(--pulse-surface);
+    border: 1px solid var(--pulse-border);
+    padding: 32px 28px;
+}
+
+.contact-info-title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--pulse-white);
+    margin-bottom: 24px;
+}
+
+.contact-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.contact-info-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.contact-info-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--pulse-muted);
+    margin-bottom: 4px;
+}
+
+.contact-info-value {
+    font-size: 0.88rem;
+    color: var(--pulse-white);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a.contact-info-value:hover { color: var(--pulse-accent); }
+
+.contact-quick-links {
+    list-style: none;
+    padding: 0; margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.contact-quick-links a {
+    font-size: 0.85rem;
+    color: var(--pulse-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.contact-quick-links a:hover { color: var(--pulse-accent); }
+
+/* Alert boxes */
+.alert-pulse {
+    background: rgba(82,71,184,0.1);
+    border: 1px solid rgba(82,71,184,0.4);
+    color: #8b82e0;
+    padding: 14px 18px;
+    font-size: 0.82rem;
+    line-height: 1.8;
+}
+
+.alert-pulse-success {
+    background: rgba(76,217,100,0.1);
+    border: 1px solid rgba(76,217,100,0.4);
+    color: #4cd964;
+    padding: 14px 18px;
+    font-size: 0.82rem;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+    .contact-wrapper { grid-template-columns: 1fr; }
+}
+
+/* ---- Select Dropdown Arrow ---- */
+.select-wrapper {
+    position: relative;
+}
+
+.select-wrapper::after {
+    content: '▾';
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--pulse-muted);
+    pointer-events: none;
+    font-size: 1rem;
+}
+
+.select-wrapper select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 40px;
+    cursor: pointer;
+}
+
+/* ---- Fix autofill on contact form ---- */
+.contact-form-col input:-webkit-autofill,
+.contact-form-col input:-webkit-autofill:hover,
+.contact-form-col input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px #1a1a1a inset;
+    -webkit-text-fill-color: #f5f5f0;
+    caret-color: #f5f5f0;
+    border-color: var(--pulse-accent);
+    transition: background-color 5000s ease-in-out 0s;
+}
