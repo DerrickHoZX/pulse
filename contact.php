@@ -44,7 +44,7 @@ unset($_SESSION['contact_success'], $_SESSION['contact_errors'], $_SESSION['cont
                             </div>
                         <?php endif; ?>
 
-                        <form action="process_contact.php" method="post">
+                        <form action="actions/process_contact.php" method="post">
 
                             <div class="row g-3 mb-3">
                                 <div class="col-md-6">

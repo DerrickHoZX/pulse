@@ -1,221 +1,235 @@
+<?php
+session_start();
+require_once 'inc/db.inc.php';
+$conn = getDBConnection();
+
+$q        = trim($_GET['q']          ?? '');
+$cat      = trim($_GET['cat']        ?? '');
+$venue_id = intval($_GET['venue_id'] ?? 0);
+$date     = trim($_GET['date']       ?? '');
+
+$sql    = "SELECT e.event_id, e.title, e.category, e.event_date, e.event_time,
+                  e.img_url, v.name AS venue_name, MIN(ss.price) AS min_price
+           FROM events e
+           JOIN venues v ON e.venue_id = v.venue_id
+           LEFT JOIN seat_sections ss ON ss.event_id = e.event_id
+           WHERE e.is_active = 1";
+
+$params = []; $types = '';
+if ($q)       { $like = "%$q%"; $sql .= " AND (e.title LIKE ? OR v.name LIKE ?)"; $params[] = $like; $params[] = $like; $types .= 'ss'; }
+if ($cat)      { $sql .= " AND e.category = ?";  $params[] = $cat;      $types .= 's'; }
+if ($venue_id) { $sql .= " AND e.venue_id = ?";  $params[] = $venue_id; $types .= 'i'; }
+if ($date)     { $sql .= " AND e.event_date = ?"; $params[] = $date;    $types .= 's'; }
+$sql .= " GROUP BY e.event_id ORDER BY e.event_date ASC";
+
+$stmt = $conn->prepare($sql);
+if ($params) $stmt->bind_param($types, ...$params);
+$stmt->execute();
+$events = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$count  = count($events);
+
+$venues = $conn->query("SELECT venue_id, name FROM venues ORDER BY name")->fetch_all(MYSQLI_ASSOC);
+$conn->close();
+
+$categories = [
+    ''             => 'All Events',
+    'Rock'         => 'Rock & Metal',
+    'K-Pop'        => 'K-Pop & J-Pop',
+    'Hip-Hop'      => 'Hip-Hop & R&B',
+    'Classical'    => 'Classical',
+    'Electronic'   => 'Electronic / EDM',
+    'Jazz & Blues' => 'Jazz & Blues',
+    'Theatre'      => 'Theatre & Arts',
+    'Sports'       => 'Sports',
+    'Festivals'    => 'Festivals',
+    'Pop / Jazz'   => 'Pop / Jazz',
+    'Alternative'  => 'Alternative',
+    'Pop'          => 'Pop',
+    'Comedy'       => 'Comedy',
+];
+?>
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>All Events — PULSE Events Singapore</title>
-        <?php include "inc/head.inc.php" ?>
-    </head>
-    <body>
+<head>
+    <title>All Events — PULSE Events Singapore</title>
+    <?php include "inc/head.inc.php" ?>
+</head>
+<body>
+    <?php include "inc/nav.inc.php" ?>
 
-        <?php include "inc/nav.inc.php" ?>
+    <!-- Page header -->
+    <div class="events-page-wrap">
+        <div class="container-fluid px-5">
+            <nav aria-label="breadcrumb" style="margin-bottom:10px;">
+                <ol class="breadcrumb mb-0" style="background:none;padding:0;font-size:0.78rem;">
+                    <li class="breadcrumb-item"><a href="index.php" style="color:var(--pulse-muted);text-decoration:none;">Home</a></li>
+                    <li class="breadcrumb-item active" style="color:var(--pulse-muted);">Events</li>
+                </ol>
+            </nav>
+            <h1 class="page-hero-title" style="margin-bottom:6px;">All <em>Events</em></h1>
+            <p style="color:var(--pulse-muted);font-size:0.88rem;margin:0;">
+                Concerts, festivals, theatre, sports and more across Singapore.
+            </p>
 
-        <!-- Page Hero -->
-        <div class="page-hero">
-            <div class="container-fluid px-5">
-                <span class="section-label">Browse</span>
-                <h1 class="page-hero-title">All <em>Events</em></h1>
-                <p class="page-hero-sub">Concerts, festivals, theatre, sports and more across Singapore.</p>
+            <!-- Category pills -->
+            <form method="GET" action="events.php" id="filterForm">
+                <input type="hidden" name="cat"      id="catInput"   value="<?= htmlspecialchars($cat) ?>">
+                <input type="hidden" name="q"        id="qInput"     value="<?= htmlspecialchars($q) ?>">
+                <input type="hidden" name="venue_id" id="venueInput" value="<?= $venue_id ?>">
+                <input type="hidden" name="date"     id="dateInput"  value="<?= htmlspecialchars($date) ?>">
+
+                <div class="eb-cat-pills">
+                    <?php foreach ($categories as $val => $label): ?>
+                    <button type="button"
+                            class="eb-cat-pill <?= $cat === $val ? 'active' : '' ?>"
+                            onclick="setCat('<?= $val ?>')">
+                        <?= htmlspecialchars($label) ?>
+                    </button>
+                    <?php endforeach; ?>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <main class="container-fluid px-5 py-5">
+
+        <!-- Filter bar -->
+        <div class="d-flex align-items-center gap-3 flex-wrap mb-4 pb-4"
+             style="border-bottom:1px solid var(--pulse-border);">
+
+            <div class="hero-search" style="max-width:340px;flex:1;min-width:200px;">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+                    <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M12 12L15.5 15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <input type="text" id="searchInput" value="<?= htmlspecialchars($q) ?>"
+                       placeholder="Artist, event, or venue…"
+                       onkeydown="if(event.key==='Enter'){document.getElementById('qInput').value=this.value;document.getElementById('filterForm').submit();}">
+                <button type="button" onclick="document.getElementById('qInput').value=document.getElementById('searchInput').value;document.getElementById('filterForm').submit();">Search</button>
             </div>
+
+            <select class="filter-select" onchange="document.getElementById('venueInput').value=this.value;document.getElementById('filterForm').submit();">
+                <option value="">All Venues</option>
+                <?php foreach ($venues as $v): ?>
+                <option value="<?= $v['venue_id'] ?>" <?= $venue_id == $v['venue_id'] ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($v['name']) ?>
+                </option>
+                <?php endforeach; ?>
+            </select>
+
+            <input type="date" class="filter-select"
+                   value="<?= htmlspecialchars($date) ?>"
+                   style="color-scheme:dark;"
+                   onchange="document.getElementById('dateInput').value=this.value;document.getElementById('filterForm').submit();">
+
+            <?php if ($q || $cat || $venue_id || $date): ?>
+            <a href="events.php" class="filter-clear-btn">&#10005; Clear filters</a>
+            <?php endif; ?>
+
+            <span style="margin-left:auto;font-size:0.8rem;color:var(--pulse-muted);">
+                <strong style="color:var(--pulse-white);"><?= $count ?></strong>
+                event<?= $count !== 1 ? 's' : '' ?> found
+            </span>
         </div>
 
-        <main>
-            <!-- Filter Bar -->
-            <div class="container-fluid px-5 pt-5 pb-2">
-                <div class="d-flex align-items-center gap-3 flex-wrap mb-4">
-                    <div class="hero-search" style="max-width:420px;flex:1;">
-                        <svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                            <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/>
-                            <path d="M12 12L15.5 15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                        </svg>
-                        <input type="text" placeholder="Artist, event, or venue…" aria-label="Search events">
-                        <button type="button">Search</button>
-                    </div>
+        <!-- Events grid -->
+        <?php if ($count === 0): ?>
+        <div style="text-align:center;padding:80px 0;color:var(--pulse-muted);">
+            <div style="font-size:3rem;margin-bottom:16px;">🎵</div>
+            <p style="margin-bottom:20px;">No events match your filters.</p>
+            <a href="events.php" class="btn btn-accent" style="display:inline-flex;align-items:center;gap:8px;">Clear Filters</a>
+        </div>
+        <?php else: ?>
+        <div class="eb-events-grid">
+            <?php foreach ($events as $e):
+                $dateStr  = date('d M Y', strtotime($e['event_date']));
+                $timeStr  = date('g:i A', strtotime($e['event_time'] ?? '00:00:00'));
+                $minPrice = $e['min_price'] ? 'S$' . number_format($e['min_price'], 0) : 'Free';
+            ?>
+            <div class="eb-card"
+                 onclick="window.location='event-detail.php?event_id=<?= $e['event_id'] ?>'">
+
+                <!-- Image -->
+                <div class="eb-card-img">
+                    <img src="<?= htmlspecialchars($e['img_url']) ?>"
+                         alt="<?= htmlspecialchars($e['title']) ?>"
+                         loading="lazy">
+
+                    <!-- Category badge -->
+                    <div class="eb-card-cat"><?= htmlspecialchars($e['category']) ?></div>
+
+                    <!-- Heart button -->
+                    <button class="eb-card-heart"
+                            data-event-id="<?= $e['event_id'] ?>"
+                            onclick="toggleHeart(event, this, <?= $e['event_id'] ?>)"
+                            aria-label="Save to wishlist">
+                        &#9825;
+                    </button>
                 </div>
-                <div class="category-pills-track">
-                    <button class="cat-pill active">🔥 All Shows</button>
-                    <button class="cat-pill">🎸 Rock &amp; Metal</button>
-                    <button class="cat-pill">🎶 K-Pop &amp; J-Pop</button>
-                    <button class="cat-pill">🎤 Hip-Hop &amp; R&amp;B</button>
-                    <button class="cat-pill">🎹 Classical</button>
-                    <button class="cat-pill">🎧 Electronic / EDM</button>
-                    <button class="cat-pill">🎷 Jazz &amp; Blues</button>
-                    <button class="cat-pill">🎭 Theatre &amp; Arts</button>
-                    <button class="cat-pill">⚽ Sports</button>
-                    <button class="cat-pill">🎪 Festivals</button>
+
+                <!-- Body -->
+                <div class="eb-card-body">
+                    <div class="eb-card-date">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <?= $dateStr ?> · <?= $timeStr ?>
+                    </div>
+                    <div class="eb-card-title"><?= htmlspecialchars($e['title']) ?></div>
+                    <div class="eb-card-venue">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <?= htmlspecialchars($e['venue_name']) ?>
+                    </div>
+                    <div class="eb-card-footer">
+                        <div class="eb-card-price">
+                            <span class="from">From</span>
+                            <span class="amount"><?= $minPrice ?></span>
+                        </div>
+                        <a href="event-detail.php?event_id=<?= $e['event_id'] ?>"
+                           class="eb-card-btn"
+                           onclick="event.stopPropagation()">
+                            Find Tickets
+                            <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                        </a>
+                    </div>
                 </div>
             </div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+    </main>
 
-            <!-- Events Grid -->
-            <section class="container-fluid px-5 py-5 fade-up">
-                <div class="d-flex justify-content-between align-items-end mb-4">
-                    <div>
-                        <span class="section-label">Showing All</span>
-                        <h2 class="section-title">Upcoming <em>Events</em></h2>
-                    </div>
-                    <span style="font-size:0.78rem;color:var(--pulse-muted);">9 events found</span>
-                </div>
+    <?php include "inc/footer.inc.php" ?>
 
-                <div class="events-grid">
-                    <div class="event-card card-large">
-                        <img class="event-card-img"
-                            src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=900&q=80"
-                            alt="Guns N' Roses">
-                        <div class="event-card-overlay">
-                            <span class="event-genre-tag">Rock</span>
-                            <div class="event-card-title">Guns N' Roses<br>World Tour 2026</div>
-                            <div class="event-card-meta">
-                                <span>18 Apr 2026</span>
-                                <span class="meta-dot"></span>
-                                <span>Singapore Indoor Stadium</span>
-                            </div>
-                            <a href="booking.php" class="event-cta-btn">
-                                Get Tickets
-                                <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
-                                    <path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                                </svg>
-                            </a>
-                        </div>
-                        <div class="price-badge">From S$148</div>
-                    </div>
+<script>
+function setCat(val) {
+    document.getElementById('catInput').value = val;
+    document.getElementById('filterForm').submit();
+}
 
-                    <div class="event-card">
-                        <img class="event-card-img"
-                            src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80"
-                            alt="Laufey">
-                        <div class="event-card-overlay">
-                            <span class="event-genre-tag">Pop / Jazz</span>
-                            <div class="event-card-title">Laufey: A Matter of Time</div>
-                            <div class="event-card-meta">
-                                <span>3 May 2026</span>
-                                <span class="meta-dot"></span>
-                                <span>Sands Expo</span>
-                            </div>
-                            <a href="booking.php" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
-                        </div>
-                        <div class="hot-badge">🔥 Selling Fast</div>
-                    </div>
+function toggleHeart(e, btn, eventId) {
+    e.stopPropagation();
+    const key = 'pulse_fav_' + eventId;
+    const liked = localStorage.getItem(key);
+    if (liked) {
+        localStorage.removeItem(key);
+        btn.classList.remove('liked');
+        btn.innerHTML = '&#9825;'; // hollow heart
+    } else {
+        localStorage.setItem(key, '1');
+        btn.classList.add('liked');
+        btn.innerHTML = '&#9829;'; // filled heart
+    }
+}
 
-                    <div class="event-card">
-                        <img class="event-card-img"
-                            src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=600&q=80"
-                            alt="Kraftwerk">
-                        <div class="event-card-overlay">
-                            <span class="event-genre-tag">Electronic</span>
-                            <div class="event-card-title">Kraftwerk Multimedia Tour</div>
-                            <div class="event-card-meta">
-                                <span>8 May 2026</span>
-                                <span class="meta-dot"></span>
-                                <span>The Star Theatre</span>
-                            </div>
-                            <a href="booking.php" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
-                        </div>
-                        <div class="price-badge">From S$78</div>
-                    </div>
-
-                    <div class="event-card">
-                        <img class="event-card-img"
-                            src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&q=80"
-                            alt="Avantgardey">
-                        <div class="event-card-overlay">
-                            <span class="event-genre-tag">K-Pop</span>
-                            <div class="event-card-title">AVANTGARDEY 2026: Let's Groove!</div>
-                            <div class="event-card-meta">
-                                <span>11–12 Mar 2026</span>
-                                <span class="meta-dot"></span>
-                                <span>Star Performing Arts</span>
-                            </div>
-                            <a href="booking.php" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
-                        </div>
-                        <div class="price-badge">From S$128</div>
-                    </div>
-
-                    <div class="event-card">
-                        <img class="event-card-img"
-                            src="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=600&q=80"
-                            alt="Vir Das">
-                        <div class="event-card-overlay">
-                            <span class="event-genre-tag">Comedy</span>
-                            <div class="event-card-title">Vir Das: Hey Stranger</div>
-                            <div class="event-card-meta">
-                                <span>21 May 2026</span>
-                                <span class="meta-dot"></span>
-                                <span>Esplanade Theatre</span>
-                            </div>
-                            <a href="booking.php" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
-                        </div>
-                        <div class="price-badge">From S$68</div>
-                    </div>
-
-                    <div class="event-card">
-                        <img class="event-card-img"
-                            src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80"
-                            alt="BUS Fancon">
-                        <div class="event-card-overlay">
-                            <span class="event-genre-tag">K-Pop</span>
-                            <div class="event-card-title">BUS: The 1st Asia Fancon Tour</div>
-                            <div class="event-card-meta">
-                                <span>14 Mar 2026</span>
-                                <span class="meta-dot"></span>
-                                <span>Singapore Indoor Stadium</span>
-                            </div>
-                            <a href="booking.php" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
-                        </div>
-                        <div class="hot-badge">🔥 Hot</div>
-                    </div>
-
-                    <div class="event-card">
-                        <img class="event-card-img"
-                            src="https://images.unsplash.com/photo-1598387993441-a364f854cfba?w=600&q=80"
-                            alt="Anson Seabra">
-                        <div class="event-card-overlay">
-                            <span class="event-genre-tag">Pop</span>
-                            <div class="event-card-title">Anson Seabra: I Must Be Dreaming</div>
-                            <div class="event-card-meta">
-                                <span>2 Apr 2026</span>
-                                <span class="meta-dot"></span>
-                                <span>Esplanade Concert Hall</span>
-                            </div>
-                            <a href="booking.php" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
-                        </div>
-                        <div class="price-badge">From S$95</div>
-                    </div>
-
-                    <div class="event-card">
-                        <img class="event-card-img"
-                            src="https://images.unsplash.com/photo-1501612780327-45045538702b?w=600&q=80"
-                            alt="Tame Impala">
-                        <div class="event-card-overlay">
-                            <span class="event-genre-tag">Alternative</span>
-                            <div class="event-card-title">Tame Impala: The Slow Rush Tour</div>
-                            <div class="event-card-meta">
-                                <span>14 Jun 2026</span>
-                                <span class="meta-dot"></span>
-                                <span>The Star Theatre</span>
-                            </div>
-                            <a href="booking.php" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
-                        </div>
-                        <div class="price-badge">From S$118</div>
-                    </div>
-
-                    <div class="event-card">
-                        <img class="event-card-img"
-                            src="https://images.unsplash.com/photo-1549451371-64aa98a6f660?w=600&q=80"
-                            alt="Singapore Jazz Festival">
-                        <div class="event-card-overlay">
-                            <span class="event-genre-tag">Jazz &amp; Blues</span>
-                            <div class="event-card-title">Singapore International Jazz Festival</div>
-                            <div class="event-card-meta">
-                                <span>20–22 Mar 2026</span>
-                                <span class="meta-dot"></span>
-                                <span>Marina Bay Sands</span>
-                            </div>
-                            <a href="booking.php" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
-                        </div>
-                        <div class="price-badge">From S$58</div>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <?php include "inc/footer.inc.php" ?>
-    </body>
+// Restore saved hearts on load
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.eb-card-heart').forEach(btn => {
+        const id = btn.dataset.eventId;
+        if (localStorage.getItem('pulse_fav_' + id)) {
+            btn.classList.add('liked');
+            btn.innerHTML = '&#9829;';
+        }
+    });
+});
+</script>
+</body>
 </html>

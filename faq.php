@@ -175,7 +175,7 @@
                                     </svg>
                                 </button>
                                 <div id="faq-a3" class="collapse faq-answer" data-bs-parent="#faqAccount">
-                                    Click <a href="forgot_password.php" style="color: var(--pulse-accent); text-decoration:none;">Forgot your password?</a> on the Sign In page. Enter your registered email address and we'll send you a link to reset your password.
+                                    If you cannot sign in, use the help link on the Sign In page or <a href="contact.php" style="color: var(--pulse-accent); text-decoration:none;">contact support</a> and we will help you recover access.
                                 </div>
                             </div>
 

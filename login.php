@@ -1,7 +1,8 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Sign In — PULSE Events</title>
+        <title>Sign In &mdash; PULSE Events Singapore</title>
         <?php include "inc/head.inc.php" ?>
     </head>
     <body>
@@ -14,10 +15,22 @@
                     New here? <a href="register.php" style="color: var(--pulse-accent); text-decoration:none;">Create an account</a>.
                 </p>
 
-                <form action="process_login.php" method="post">
+                <?php if (isset($_GET['error'])): ?>
+                <div class="alert-pulse">
+                    <?php
+                    $errors = [
+                        'missing' => 'Please enter your email and password.',
+                        'invalid' => 'Incorrect email or password. Please try again.',
+                    ];
+                    echo $errors[$_GET['error']] ?? 'Something went wrong. Please try again.';
+                    ?>
+                </div>
+                <?php endif; ?>
+
+                <form action="actions/process_login.php<?= isset($_GET['redirect']) ? '?redirect=' . urlencode($_GET['redirect']) : '' ?>" method="post">
                     <div class="mb-4">
                         <label for="email" class="form-label">Email</label>
-                        <input required maxlength="45" type="email" id="email" name="email"
+                        <input required maxlength="100" type="email" id="email" name="email"
                             class="form-control" placeholder="you@example.com">
                     </div>
                     <div class="mb-4">
@@ -33,7 +46,7 @@
                 </form>
 
                 <p style="text-align:center; margin-top:20px;">
-                    <a href="#" style="color: var(--pulse-muted); font-size:0.78rem; text-decoration:none;">Forgot your password?</a>
+                    <a href="contact.php" style="color: var(--pulse-muted); font-size:0.78rem; text-decoration:none;">Need help signing in?</a>
                 </p>
             </div>
         </main>

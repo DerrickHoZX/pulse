@@ -1,30 +1,26 @@
 <footer class="pulse-footer">
     <div class="container-fluid px-5">
         <div class="row gy-5 footer-main">
-            <!-- Brand -->
             <div class="col-lg-4 col-md-6">
                 <a href="index.php" class="footer-brand">PUL<span class="brand-accent">S</span>E</a>
                 <p class="footer-desc">
                     Singapore's premier destination for live music, sports, theatre, and unforgettable experiences.
                 </p>
-                <div class="d-flex gap-2 mt-3">
-                    <a href="#" class="social-btn">in</a>
-                    <a href="#" class="social-btn">ig</a>
-                    <a href="#" class="social-btn">tw</a>
-                    <a href="#" class="social-btn">yt</a>
-                </div>
+                <p class="footer-desc" style="margin-top: 14px;">
+                    Need help? <a href="contact.php" style="color: var(--pulse-white); text-decoration: none;">Contact support</a>
+                </p>
             </div>
-            <!-- Explore -->
+
             <div class="col-lg-2 col-md-3 col-6 ms-auto">
                 <h6 class="footer-col-title">Explore</h6>
                 <ul class="footer-links">
-                    <li><a href="#">Concerts</a></li>
-                    <li><a href="#">Festivals</a></li>
-                    <li><a href="#">Theatre & Arts</a></li>
-                    <li><a href="#">Sports</a></li>
+                    <li><a href="events.php">Concerts</a></li>
+                    <li><a href="events.php?cat=Festivals">Festivals</a></li>
+                    <li><a href="events.php?cat=Theatre">Theatre &amp; Arts</a></li>
+                    <li><a href="events.php?cat=Sports">Sports</a></li>
                 </ul>
             </div>
-            <!-- Support -->
+
             <div class="col-lg-2 col-md-3 col-6">
                 <h6 class="footer-col-title">Support</h6>
                 <ul class="footer-links">
@@ -34,13 +30,18 @@
                     <li><a href="terms_of_service.php">Terms of Service</a></li>
                 </ul>
             </div>
-            <!-- Account -->
+
             <div class="col-lg-2 col-md-3 col-6">
                 <h6 class="footer-col-title">Account</h6>
                 <ul class="footer-links">
-                    <li><a href="login.php">Sign In</a></li>
-                    <li><a href="register.php">Register</a></li>
-                    <li><a href="#">My Tickets</a></li>
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <li><a href="dashboard.php">My Bookings</a></li>
+                        <li><a href="actions/logout.php">Sign Out</a></li>
+                    <?php else: ?>
+                        <li><a href="login.php">Sign In</a></li>
+                        <li><a href="register.php">Register</a></li>
+                        <li><a href="login.php?redirect=dashboard.php">My Bookings</a></li>
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>
