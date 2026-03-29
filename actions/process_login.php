@@ -75,7 +75,7 @@ $_SESSION['email']   = $user['email'];
 $_SESSION['role']    = $user['role'];
 
 if ($user['role'] === 'admin') {
-    header('Location: ../admin/index.php');
+    header('Location: ../admin/admin.php');
 } else {
     $redirect = $_GET['redirect'] ?? '../index.php';
     header('Location: ' . $redirect);

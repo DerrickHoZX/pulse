@@ -1,16 +1,23 @@
 <?php if (session_status() === PHP_SESSION_NONE) session_start(); ?>
 
 <?php
-$currentDir = dirname($_SERVER['PHP_SELF']);
+$currentPage = basename($_SERVER['PHP_SELF']);
+$currentDir  = dirname($_SERVER['PHP_SELF']);
 $isAdminPage = (strpos($currentDir, '/admin') !== false);
 
-$homeLink = $isAdminPage ? '../index.php' : 'index.php';
-$eventsLink = $isAdminPage ? '../events.php' : 'events.php';
+$homeLink      = $isAdminPage ? '../index.php' : 'index.php';
+$eventsLink    = $isAdminPage ? '../events.php' : 'events.php';
 $dashboardLink = $isAdminPage ? '../dashboard.php' : 'dashboard.php';
-$logoutLink = $isAdminPage ? '../actions/logout.php' : 'actions/logout.php';
-$loginLink = $isAdminPage ? '../login.php' : 'login.php';
-$adminLink = $isAdminPage ? 'admin.php' : 'admin/admin.php';
-$venuesLink = $homeLink . '#venues';
+$logoutLink    = $isAdminPage ? '../actions/logout.php' : 'actions/logout.php';
+$loginLink     = $isAdminPage ? '../login.php' : 'login.php';
+$adminLink     = $isAdminPage ? 'admin.php' : 'admin/admin.php';
+$venuesLink    = $homeLink . '#venues';
+
+// Determine active link
+$isHome   = in_array($currentPage, ['index.php']) && !$isAdminPage;
+$isEvents = $currentPage === 'events.php';
+$isVenues = false; // anchor link, never truly "active"
+$isAdmin  = $isAdminPage;
 ?>
 
 <nav class="navbar navbar-expand-lg pulse-navbar" id="pulseNav">
@@ -28,13 +35,11 @@ $venuesLink = $homeLink . '#venues';
         <div class="collapse navbar-collapse" id="navbarMain">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-4">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="<?= $homeLink ?>">Home</a>
+                    <a class="nav-link <?= $isHome ? 'active' : '' ?>" href="<?= $homeLink ?>">Home</a>
                 </li>
-
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= $eventsLink ?>">All Events</a>
+                    <a class="nav-link <?= $isEvents ? 'active' : '' ?>" href="<?= $eventsLink ?>">All Events</a>
                 </li>
-
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
@@ -47,14 +52,12 @@ $venuesLink = $homeLink . '#venues';
                         <li><a class="dropdown-item" href="<?= $eventsLink ?>">On Sale Now</a></li>
                     </ul>
                 </li>
-
                 <li class="nav-item">
                     <a class="nav-link" href="<?= $venuesLink ?>">Venues</a>
                 </li>
-
                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= $adminLink ?>">Admin Panel</a>
+                        <a class="nav-link <?= $isAdmin ? 'active' : '' ?>" href="<?= $adminLink ?>">Admin Panel</a>
                     </li>
                 <?php endif; ?>
             </ul>
@@ -69,14 +72,12 @@ $venuesLink = $homeLink . '#venues';
                             </svg>
                             <?= htmlspecialchars($_SESSION['fname']) ?>
                         </button>
-
                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end pulse-dropdown">
                             <?php if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'): ?>
                                 <li><a class="dropdown-item" href="<?= $isAdminPage ? '../profile.php' : 'profile.php' ?>">My Profile</a></li>
                                 <li><a class="dropdown-item" href="<?= $dashboardLink ?>">My Bookings</a></li>
                                 <li><hr class="dropdown-divider"></li>
                             <?php endif; ?>
-
                             <li><a class="dropdown-item text-danger" href="<?= $logoutLink ?>">Sign Out</a></li>
                         </ul>
                     </div>
