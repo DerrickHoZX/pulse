@@ -71,7 +71,7 @@ $conn->close();
                 <span class="section-label">Administration</span>
                 <h2 class="section-title">Manage <em>Users</em></h2>
             </div>
-            <a href="index.php" class="btn btn-outline-light">Back</a>
+            <a href="admin.php" class="btn btn-outline-light">Back</a>
         </div>
 
         <?php if ($message): ?>
