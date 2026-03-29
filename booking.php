@@ -71,7 +71,9 @@ function cleanLabel(string $label): string {
 
     <div class="booking-page-wrapper">
         <div class="container" style="max-width:1100px;">
-            <div class="booking-steps" id="bookingSteps">
+
+            <!-- Steps bar pushed down below navbar -->
+            <div class="booking-steps" id="bookingSteps" style="margin-top:60px; margin-bottom:40px;">
                 <div class="booking-step active" data-step="1"><div class="step-num">1</div><span class="step-label">Tickets</span></div>
                 <div class="booking-step" data-step="2"><div class="step-num">2</div><span class="step-label">Details</span></div>
                 <div class="booking-step" data-step="3"><div class="step-num">3</div><span class="step-label">Payment</span></div>
@@ -88,6 +90,7 @@ function cleanLabel(string $label): string {
                 </span>
             </div>
 
+            <!-- Step 1: Tickets -->
             <div class="booking-panel active" id="step1">
                 <div class="booking-layout">
                     <div>
@@ -154,6 +157,7 @@ function cleanLabel(string $label): string {
                 </div>
             </div>
 
+            <!-- Step 2: Details -->
             <div class="booking-panel" id="step2">
                 <div class="booking-layout">
                     <div>
@@ -161,20 +165,26 @@ function cleanLabel(string $label): string {
                             <div class="booking-form-title">Your Details</div>
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">First Name</label>
-                                    <input type="text" class="form-control" value="<?= htmlspecialchars($_SESSION['fname'] ?? '') ?>" readonly>
+                                    <label class="form-label" style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--pulse-muted);margin-bottom:8px;display:block;">First Name</label>
+                                    <input type="text" class="form-control"
+                                        style="background:var(--pulse-card);border:1px solid var(--pulse-border);border-radius:0;color:var(--pulse-white);padding:12px 16px;font-family:var(--font-body);font-size:0.88rem;width:100%;"
+                                        value="<?= htmlspecialchars($_SESSION['fname'] ?? '') ?>" readonly>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Last Name</label>
-                                    <input type="text" class="form-control" id="lastName" placeholder="Last name">
+                                    <label class="form-label" style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--pulse-muted);margin-bottom:8px;display:block;">Last Name</label>
+                                    <input type="text" class="form-control" id="lastName" placeholder="Last name"
+                                        style="background:var(--pulse-card);border:1px solid var(--pulse-border);border-radius:0;color:var(--pulse-white);padding:12px 16px;font-family:var(--font-body);font-size:0.88rem;width:100%;">
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Email Address</label>
-                                    <input type="email" class="form-control" value="<?= htmlspecialchars($_SESSION['email'] ?? '') ?>" readonly>
+                                    <label class="form-label" style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--pulse-muted);margin-bottom:8px;display:block;">Email Address</label>
+                                    <input type="email" class="form-control"
+                                        style="background:var(--pulse-card);border:1px solid var(--pulse-border);border-radius:0;color:var(--pulse-white);padding:12px 16px;font-family:var(--font-body);font-size:0.88rem;width:100%;"
+                                        value="<?= htmlspecialchars($_SESSION['email'] ?? '') ?>" readonly>
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Phone Number</label>
-                                    <input type="tel" class="form-control" id="phoneNum" placeholder="+65 9123 4567">
+                                    <label class="form-label" style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--pulse-muted);margin-bottom:8px;display:block;">Phone Number</label>
+                                    <input type="tel" class="form-control" id="phoneNum" placeholder="+65 9123 4567"
+                                        style="background:var(--pulse-card);border:1px solid var(--pulse-border);border-radius:0;color:var(--pulse-white);padding:12px 16px;font-family:var(--font-body);font-size:0.88rem;width:100%;">
                                 </div>
                             </div>
                         </div>
@@ -197,6 +207,7 @@ function cleanLabel(string $label): string {
                 </div>
             </div>
 
+            <!-- Step 3: Payment -->
             <div class="booking-panel" id="step3">
                 <div class="booking-layout">
                     <div>
@@ -252,6 +263,7 @@ function cleanLabel(string $label): string {
                 </div>
             </div>
 
+            <!-- Step 4: Confirmation -->
             <div class="booking-panel" id="step4">
                 <div class="booking-success">
                     <div class="success-title">Booking Confirmed</div>

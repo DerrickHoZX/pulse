@@ -35,12 +35,12 @@
                 <h6 class="footer-col-title">Account</h6>
                 <ul class="footer-links">
                     <?php if (isset($_SESSION['user_id'])): ?>
+                        <li><a href="profile.php">My Profile</a></li>
                         <li><a href="dashboard.php">My Bookings</a></li>
                         <li><a href="actions/logout.php">Sign Out</a></li>
                     <?php else: ?>
                         <li><a href="login.php">Sign In</a></li>
                         <li><a href="register.php">Register</a></li>
-                        <li><a href="login.php?redirect=dashboard.php">My Bookings</a></li>
                     <?php endif; ?>
                 </ul>
             </div>

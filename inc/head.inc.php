@@ -14,8 +14,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <?php $basePath = $basePath ?? ""; ?>
     <!-- Custom JS -->
-    <script defer src="<?= $basePath ?>js/main.js"></script>
+    <script defer src="<?= $basePath ?>js/main.js?v=999"></script>
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="<?= $basePath ?>css/main.css?v=11">                        
+    <link rel="stylesheet" href="<?= $basePath ?>css/main.css?v=999">                        
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

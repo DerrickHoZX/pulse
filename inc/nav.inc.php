@@ -72,6 +72,7 @@ $venuesLink = $homeLink . '#venues';
 
                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end pulse-dropdown">
                             <?php if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'): ?>
+                                <li><a class="dropdown-item" href="<?= $isAdminPage ? '../profile.php' : 'profile.php' ?>">My Profile</a></li>
                                 <li><a class="dropdown-item" href="<?= $dashboardLink ?>">My Bookings</a></li>
                                 <li><hr class="dropdown-divider"></li>
                             <?php endif; ?>
