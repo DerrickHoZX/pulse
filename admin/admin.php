@@ -8,11 +8,6 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../index.php");
     exit();
 }
-// Temporary admin session for testing
-$_SESSION['user_id'] = 1;
-$_SESSION['fname'] = 'Admin';
-$_SESSION['role'] = 'admin';
-// Delete when done testing
 
 // Optional: admin name for greeting
 $adminName = $_SESSION['fname'] ?? 'Admin';
