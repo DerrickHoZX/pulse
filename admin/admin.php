@@ -15,7 +15,7 @@ $conn = getDBConnection();
 // Real dashboard stats
 $totalEvents   = $conn->query("SELECT COUNT(*) FROM events")->fetch_row()[0];
 $totalBookings = $conn->query("SELECT COUNT(*) FROM bookings")->fetch_row()[0];
-$totalUsers    = $conn->query("SELECT COUNT(*) FROM users WHERE role = 'user'")->fetch_row()[0];
+$totalUsers    = $conn->query("SELECT COUNT(*) FROM users WHERE role = 'member'")->fetch_row()[0];
 $totalRevenue  = $conn->query("SELECT SUM(total) FROM bookings WHERE status = 'confirmed'")->fetch_row()[0] ?? 0;
 
 // Recent bookings activity
@@ -192,38 +192,6 @@ $conn->close();
                             <?php endif; ?>
                         </tbody>
                     </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Reports + Settings -->
-        <section class="container-fluid px-5 pb-5 fade-up">
-            <div class="row g-4">
-                <div class="col-lg-6">
-                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
-                        <span class="section-label">Reporting</span>
-                        <h4 class="mb-3">Reports</h4>
-                        <p style="color: var(--pulse-muted); font-weight:300;">
-                            Access sales reports, booking summaries, event performance insights, and downloadable records.
-                        </p>
-                        <div class="d-flex gap-3 flex-wrap">
-                            <a href="reports.php" class="btn-dark-solid">View Reports</a>
-                            <a href="export_report.php" class="btn-dark-solid">Export Data</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
-                        <span class="section-label">Administration</span>
-                        <h4 class="mb-3">System Settings</h4>
-                        <p style="color: var(--pulse-muted); font-weight:300;">
-                            Configure admin access, update platform settings, and manage core system controls.
-                        </p>
-                        <div class="d-flex gap-3 flex-wrap">
-                            <a href="settings.php" class="btn-dark-solid">Open Settings</a>
-                            <a href="../actions/logout.php" class="btn-dark-solid">Log Out</a>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>

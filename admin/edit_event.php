@@ -12,14 +12,14 @@ if (!$event_id) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title       = trim($_POST['title'] ?? '');
-    $category    = trim($_POST['category'] ?? '');
-    $event_date  = $_POST['event_date'] ?? '';
-    $event_time  = $_POST['event_time'] ?? '';
-    $venue_id    = intval($_POST['venue_id'] ?? 0) ?: null;
+    $title = trim($_POST['title'] ?? '');
+    $category = trim($_POST['category'] ?? '');
+    $event_date = $_POST['event_date'] ?? '';
+    $event_time = $_POST['event_time'] ?? '';
+    $venue_id = intval($_POST['venue_id'] ?? 0) ?: null;
     $description = trim($_POST['description'] ?? '');
-    $img_url     = trim($_POST['img_url'] ?? '');
-    $is_active   = isset($_POST['is_active']) ? 1 : 0;
+    $img_url = trim($_POST['img_url'] ?? '');
+    $is_active = isset($_POST['is_active']) ? 1 : 0;
 
     // Update event
     $stmt = $conn->prepare("UPDATE events SET title=?, category=?, event_date=?, event_time=?, venue_id=?, description=?, img_url=?, is_active=? WHERE event_id=?");
@@ -28,40 +28,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->close();
 
     // Update existing sections
-    $sec_ids    = $_POST['section_id'] ?? [];
+    $sec_ids = $_POST['section_id'] ?? [];
     $sec_labels = $_POST['section_label'] ?? [];
     $sec_prices = $_POST['section_price'] ?? [];
-    $sec_seats  = $_POST['section_seats'] ?? [];
+    $sec_seats = $_POST['section_seats'] ?? [];
 
     $upd = $conn->prepare("UPDATE seat_sections SET label=?, price=?, total_seats=? WHERE section_id=? AND event_id=?");
+    $del = $conn->prepare("DELETE FROM seats WHERE section_id=?");
+    $seat = $conn->prepare("INSERT INTO seats (section_id, row_label, seat_num, status) VALUES (?, ?, ?, 'available')");
+
     foreach ($sec_ids as $i => $sec_id) {
+        $sec_id = intval($sec_id);
         $label = trim($sec_labels[$i] ?? '');
         $price = floatval($sec_prices[$i] ?? 0);
-        $seats = intval($sec_seats[$i] ?? 0);
-        if ($label) {
-            $upd->bind_param('sdiii', $label, $price, $seats, $sec_id, $event_id);
-            $upd->execute();
+        $totalSeats = intval($sec_seats[$i] ?? 0);
+        if (!$label)
+            continue;
+
+        // Update section metadata
+        $upd->bind_param('sdiii', $label, $price, $totalSeats, $sec_id, $event_id);
+        $upd->execute();
+
+        // Regenerate seats — delete old ones first, then re-insert
+        $del->bind_param('i', $sec_id);
+        $del->execute();
+
+        $seatsPerRow = 10;
+        $rows = ceil($totalSeats / $seatsPerRow);
+        $seatCount = 0;
+        for ($r = 0; $r < $rows; $r++) {
+            $rowLabel = chr(65 + $r);
+            for ($s = 1; $s <= $seatsPerRow; $s++) {
+                if ($seatCount >= $totalSeats)
+                    break;
+                $seat->bind_param('isi', $sec_id, $rowLabel, $s);
+                $seat->execute();
+                $seatCount++;
+            }
         }
     }
     $upd->close();
+    $del->close();
 
-    // Insert new sections
+    // Insert new sections + generate their seats
     $new_labels = $_POST['new_section_label'] ?? [];
     $new_prices = $_POST['new_section_price'] ?? [];
-    $new_seats  = $_POST['new_section_seats'] ?? [];
+    $new_seats = $_POST['new_section_seats'] ?? [];
 
     $ins = $conn->prepare("INSERT INTO seat_sections (event_id, label, price, total_seats) VALUES (?, ?, ?, ?)");
+
     foreach ($new_labels as $i => $label) {
         $label = trim($label);
         $price = floatval($new_prices[$i] ?? 0);
-        $seats = intval($new_seats[$i] ?? 0);
-        if ($label) {
-            $ins->bind_param('isdi', $event_id, $label, $price, $seats);
-            $ins->execute();
+        $totalSeats = intval($new_seats[$i] ?? 0);
+        if (!$label)
+            continue;
+
+        $ins->bind_param('isdi', $event_id, $label, $price, $totalSeats);
+        $ins->execute();
+        $new_sec_id = $conn->insert_id;
+
+        // Generate seats for new section
+        $seatsPerRow = 10;
+        $rows = ceil($totalSeats / $seatsPerRow);
+        $seatCount = 0;
+        for ($r = 0; $r < $rows; $r++) {
+            $rowLabel = chr(65 + $r);
+            for ($s = 1; $s <= $seatsPerRow; $s++) {
+                if ($seatCount >= $totalSeats)
+                    break;
+                $seat->bind_param('isi', $new_sec_id, $rowLabel, $s);
+                $seat->execute();
+                $seatCount++;
+            }
         }
     }
     $ins->close();
-    $conn->close();
+    $seat->close();
 
     header("Location: manage_events.php?updated=1");
     exit;
@@ -92,10 +135,12 @@ $conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>PULSE Admin - Edit Event</title>
     <?php include "../inc/head.inc.php"; ?>
 </head>
+
 <body>
     <?php include "../inc/nav.inc.php"; ?>
     <div style="margin-top: 100px;"></div>
@@ -111,22 +156,26 @@ $conn->close();
 
                 <div class="mb-3">
                     <label class="form-label admin-form-label">Event Name</label>
-                    <input type="text" name="title" class="form-control admin-form-control" value="<?= htmlspecialchars($event['title']) ?>" required>
+                    <input type="text" name="title" class="form-control admin-form-control"
+                        value="<?= htmlspecialchars($event['title']) ?>" required>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label admin-form-label">Category</label>
-                    <input type="text" name="category" class="form-control admin-form-control" value="<?= htmlspecialchars($event['category'] ?? '') ?>">
+                    <input type="text" name="category" class="form-control admin-form-control"
+                        value="<?= htmlspecialchars($event['category'] ?? '') ?>">
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label admin-form-label">Date</label>
-                    <input type="date" name="event_date" class="form-control admin-form-control" value="<?= htmlspecialchars($event['event_date']) ?>" required>
+                    <input type="date" name="event_date" class="form-control admin-form-control"
+                        value="<?= htmlspecialchars($event['event_date']) ?>" required>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label admin-form-label">Time</label>
-                    <input type="time" name="event_time" class="form-control admin-form-control" value="<?= htmlspecialchars($event['event_time'] ?? '') ?>">
+                    <input type="time" name="event_time" class="form-control admin-form-control"
+                        value="<?= htmlspecialchars($event['event_time'] ?? '') ?>">
                 </div>
 
                 <div class="mb-3">
@@ -143,16 +192,21 @@ $conn->close();
 
                 <div class="mb-3">
                     <label class="form-label admin-form-label">Description</label>
-                    <textarea name="description" rows="5" class="form-control admin-form-control"><?= htmlspecialchars($event['description'] ?? '') ?></textarea>
+                    <textarea name="description" rows="5"
+                        class="form-control admin-form-control"><?= htmlspecialchars($event['description'] ?? '') ?></textarea>
                 </div>
                 <div class="mb-3">
                     <label class="form-label admin-form-label">Thumbnail Image URL</label>
-                    <input type="url" name="img_url" class="form-control admin-form-control" value="<?= htmlspecialchars($event['img_url'] ?? '') ?>" placeholder="https://example.com/image.jpg">
-                    <small style="color:var(--pulse-muted);">Paste a direct image URL. This shows as the event card thumbnail.</small>
+                    <input type="url" name="img_url" class="form-control admin-form-control"
+                        value="<?= htmlspecialchars($event['img_url'] ?? '') ?>"
+                        placeholder="https://example.com/image.jpg">
+                    <small style="color:var(--pulse-muted);">Paste a direct image URL. This shows as the event card
+                        thumbnail.</small>
                 </div>
 
                 <div class="mb-3 form-check">
-                    <input type="checkbox" name="is_active" class="form-check-input" id="is_active" <?= $event['is_active'] ? 'checked' : '' ?>>
+                    <input type="checkbox" name="is_active" class="form-check-input" id="is_active"
+                        <?= $event['is_active'] ? 'checked' : '' ?>>
                     <label class="form-check-label admin-form-label" for="is_active">Active (visible to public)</label>
                 </div>
 
@@ -164,9 +218,13 @@ $conn->close();
                         <?php foreach ($sections as $sec): ?>
                             <div class="d-flex gap-2 mb-2 align-items-center">
                                 <input type="hidden" name="section_id[]" value="<?= $sec['section_id'] ?>">
-                                <input type="text" name="section_label[]" class="form-control admin-form-control" value="<?= htmlspecialchars($sec['label']) ?>" placeholder="Section" style="flex:2;">
-                                <input type="number" step="0.01" min="0" name="section_price[]" class="form-control admin-form-control" value="<?= $sec['price'] ?>" placeholder="Price (S$)" style="flex:1;">
-                                <input type="number" min="0" name="section_seats[]" class="form-control admin-form-control" value="<?= $sec['total_seats'] ?>" placeholder="Seats" style="flex:1;">
+                                <input type="text" name="section_label[]" class="form-control admin-form-control"
+                                    value="<?= htmlspecialchars($sec['label']) ?>" placeholder="Section" style="flex:2;">
+                                <input type="number" step="0.01" min="0" name="section_price[]"
+                                    class="form-control admin-form-control" value="<?= $sec['price'] ?>"
+                                    placeholder="Price (S$)" style="flex:1;">
+                                <input type="number" min="0" name="section_seats[]" class="form-control admin-form-control"
+                                    value="<?= $sec['total_seats'] ?>" placeholder="Seats" style="flex:1;">
                             </div>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -178,7 +236,8 @@ $conn->close();
                 <div class="mb-3">
                     <label class="form-label admin-form-label">Add New Sections</label>
                     <div id="new-sections-wrapper"></div>
-                    <button type="button" id="add-section" class="btn btn-outline-light btn-sm mt-2">+ Add Section</button>
+                    <button type="button" id="add-section" class="btn btn-outline-light btn-sm mt-2">+ Add
+                        Section</button>
                 </div>
 
                 <div class="d-flex gap-2 mt-4">
@@ -214,4 +273,5 @@ $conn->close();
         });
     </script>
 </body>
+
 </html>
