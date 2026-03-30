@@ -28,6 +28,7 @@
                         'pwdspecial'   => '⚠ Password must contain at least one special character.',
                         'pwdmatch'     => '⚠ Passwords do not match.',
                         'agree'        => '⚠ You must agree to the Terms & Conditions.',
+                        'captcha'      => '⚠ Please complete the CAPTCHA verification.',
                         'exists'       => '⚠ An account with that email already exists. <a href="login.php" style="color:inherit;font-weight:500;">Sign in instead?</a>',
                         'dbfail'       => '⚠ Registration failed. Please try again.',
                     ];
@@ -105,12 +106,16 @@
                     <div class="mb-4 form-check">
                         <input required type="checkbox" name="agree" id="agree" class="form-check-input">
                         <label class="form-check-label" for="agree">
-                            I agree to the <a href="terms_of_service.php" style="color:var(--pulse-accent); text-decoration:none;">Terms &amp; Conditions</a>.
+                            I agree to the <a href="terms_of_service.php" style="color:var(--pulse-accent); text-decoration:none;">Terms of Service</a>.
                         </label>
                     </div>
 
+                    <div id="captcha-section" style="display:none; margin-bottom: 16px;">
+                        <div class="g-recaptcha" data-sitekey="6Ldq4Z0sAAAAAHeMUWUcZVNMRmvelY0eqey3tP_I" data-theme="dark"></div>
+                    </div>
+
                     <div class="mb-3">
-                        <button type="submit" class="btn btn-accent w-100" style="justify-content:center; padding:14px;">
+                        <button type="submit" id="submit-btn" class="btn btn-accent w-100" style="justify-content:center; padding:14px; display:none;">
                             Create Account
                         </button>
                     </div>
@@ -119,5 +124,18 @@
         </main>
 
         <?php include "inc/footer.inc.php" ?>
+        <script>
+        document.getElementById('agree').addEventListener('change', function() {
+            const captcha = document.getElementById('captcha-section');
+            const btn = document.getElementById('submit-btn');
+            if (this.checked) {
+                captcha.style.display = 'block';
+                btn.style.display = 'flex';
+            } else {
+                captcha.style.display = 'none';
+                btn.style.display = 'none';
+            }
+        });
+        </script>
     </body>
 </html>

@@ -16,6 +16,8 @@
     <!-- Custom JS -->
     <script defer src="<?= $basePath ?>js/main.js?v=999"></script>
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="<?= $basePath ?>css/main.css?v=999">                        
+    <link rel="stylesheet" href="<?= $basePath ?>css/main.css?v=999">  
+    <!-- Google reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>                      
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

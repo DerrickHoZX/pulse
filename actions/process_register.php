@@ -42,6 +42,19 @@ if (empty($agree)) {
     header('Location: ../register.php?error=agree'); exit;
 }
 
+// Verify reCAPTCHA
+$captcha = $_POST['g-recaptcha-response'] ?? '';
+if (!$captcha) {
+    header('Location: ../register.php?error=captcha'); exit;
+}
+$verify = file_get_contents(
+    'https://www.google.com/recaptcha/api/siteverify?secret=6Ldq4Z0sAAAAAMUE0Uc232vy1rkMbocapMB6vFZj&response=' . urlencode($captcha)
+);
+$result = json_decode($verify, true);
+if (!$result['success']) {
+    header('Location: ../register.php?error=captcha'); exit;
+}
+
 $conn = getDBConnection();
 $chk  = $conn->prepare("SELECT user_id FROM users WHERE email = ?");
 $chk->bind_param('s', $email);
