@@ -14,7 +14,7 @@
             </div>
 
             <div class="col-lg-2 col-md-3 col-6 ms-auto">
-                <h6 class="footer-col-title">Explore</h6>
+                <h2 class="footer-col-title">Explore</h2>
                 <ul class="footer-links">
                     <li><a href="<?= $base ?>events.php">Concerts</a></li>
                     <li><a href="<?= $base ?>events.php?cat=Festivals">Festivals</a></li>
@@ -24,7 +24,7 @@
             </div>
 
             <div class="col-lg-2 col-md-3 col-6">
-                <h6 class="footer-col-title">Support</h6>
+                <h2 class="footer-col-title">Support</h2>
                 <ul class="footer-links">
                     <li><a href="<?= $base ?>about_us.php">About Us</a></li>
                     <li><a href="<?= $base ?>faq.php">FAQ</a></li>
@@ -34,7 +34,7 @@
             </div>
 
             <div class="col-lg-2 col-md-3 col-6">
-                <h6 class="footer-col-title">Account</h6>
+                <h2 class="footer-col-title">Account</h2>
                 <ul class="footer-links">
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <?php if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'): ?>

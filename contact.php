@@ -104,7 +104,7 @@ unset($_SESSION['contact_success'], $_SESSION['contact_errors'], $_SESSION['cont
                     <!-- Right: Info -->
                     <div class="contact-info-col">
                         <div class="contact-info-card">
-                            <h3 class="contact-info-title">Other Ways to Reach Us</h3>
+                            <h2 class="contact-info-title">Other Ways to Reach Us</h2>
 
                             <div class="contact-info-item">
                                 <div class="contact-info-icon">✉</div>
@@ -132,7 +132,7 @@ unset($_SESSION['contact_success'], $_SESSION['contact_errors'], $_SESSION['cont
                         </div>
 
                         <div class="contact-info-card mt-4">
-                            <h3 class="contact-info-title">Quick Links</h3>
+                            <h2 class="contact-info-title">Quick Links</h2>
                             <ul class="contact-quick-links">
                                 <li><a href="faq.php">→ Help Centre / FAQ</a></li>
                                 <li><a href="terms_of_service.php">→ Terms of Service</a></li>

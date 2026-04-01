@@ -50,8 +50,8 @@
 
     <!-- Carousel Indicators as vertical dots -->
     <div class="hero-dots">
-        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="hero-dot active" aria-current="true"></button>
-        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" class="hero-dot"></button>
-        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" class="hero-dot"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="hero-dot active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" class="hero-dot" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" class="hero-dot" aria-label="Slide 3"></button>
     </div>
 </header>

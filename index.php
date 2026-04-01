@@ -204,9 +204,7 @@
                     </div>
                 </div>
             </div>
-
         </main>
-
+        <?php include "inc/footer.inc.php" ?>
     </body>
-    <?php include "inc/footer.inc.php" ?>
 </html>
