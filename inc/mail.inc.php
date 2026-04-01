@@ -77,3 +77,24 @@ function buildBookingConfirmationMail(array $booking): array {
 
     return ['subject' => $subject, 'html' => $html, 'text' => $text];
 }
+
+function buildPasswordResetMail(string $fname, string $resetLink): array {
+    $subject = 'Reset your PULSE password';
+
+    $html = '
+        <div style="font-family:Arial,sans-serif;background:#0d0d0d;color:#f8f4ee;padding:24px;">
+            <div style="max-width:640px;margin:0 auto;background:#171717;border:1px solid #2a2a2a;padding:28px;">
+                <h1 style="margin:0 0 12px;font-size:24px;">Password Reset</h1>
+                <p style="margin:0 0 20px;color:#b8b0a7;">Hi ' . htmlspecialchars($fname) . ', we received a request to reset your PULSE password.</p>
+                <p style="margin:0 0 24px;color:#b8b0a7;">Click the button below to reset it. This link expires in <strong style="color:#f8f4ee;">5 minutes</strong>.</p>
+                <a href="' . $resetLink . '" style="display:inline-block;background:#5247B8;color:#fff;padding:14px 32px;text-decoration:none;font-size:14px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;">
+                    Reset Password
+                </a>
+                <p style="margin:24px 0 0;color:#b8b0a7;font-size:13px;">If you did not request this, you can safely ignore this email. Your password will not change.</p>
+            </div>
+        </div>';
+
+    $text = "Hi {$fname},\n\nReset your PULSE password by visiting this link:\n{$resetLink}\n\nThis link expires in 5 minutes.\n\nIf you did not request this, ignore this email.";
+
+    return ['subject' => $subject, 'html' => $html, 'text' => $text];
+}

@@ -11,10 +11,6 @@
                 <p class="footer-desc">
                     Singapore's premier destination for live music, sports, theatre, and unforgettable experiences.
                 </p>
-                <p class="footer-desc" style="margin-top: 14px;">
-                    Need help? <a href="<?= $base ?>contact.php"
-                        style="color: var(--pulse-white); text-decoration: none;">Contact support</a>
-                </p>
             </div>
 
             <div class="col-lg-2 col-md-3 col-6 ms-auto">
@@ -31,7 +27,7 @@
                 <h6 class="footer-col-title">Support</h6>
                 <ul class="footer-links">
                     <li><a href="<?= $base ?>about_us.php">About Us</a></li>
-                    <li><a href="<?= $base ?>faq.php">Help Centre</a></li>
+                    <li><a href="<?= $base ?>faq.php">FAQ</a></li>
                     <li><a href="<?= $base ?>contact.php">Contact Us</a></li>
                     <li><a href="<?= $base ?>terms_of_service.php">Terms of Service</a></li>
                 </ul>

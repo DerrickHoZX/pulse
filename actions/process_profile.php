@@ -30,7 +30,7 @@ if ($action === 'details') {
     }
 
     // Check email isn't taken by a different account
-    $chk = $conn->prepare("SELECT user_id FROM users WHERE email = ? AND user_id != ?");
+    $chk = $conn->prepare("SELECT user_id FROM users WHERE email = ? AND user_id != ? AND is_deleted = 0");
     $chk->bind_param('si', $email, $user_id);
     $chk->execute();
     $chk->store_result();

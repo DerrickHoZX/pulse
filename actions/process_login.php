@@ -16,7 +16,7 @@ if (!$email || !$pwd) {
 }
 
 $conn = getDBConnection();
-$stmt = $conn->prepare("SELECT user_id, fname, lname, email, password, role, login_attempts, lockout_until FROM users WHERE email = ?");
+$stmt = $conn->prepare("SELECT user_id, fname, lname, email, password, role, login_attempts, lockout_until FROM users WHERE email = ? AND is_deleted = 0");
 $stmt->bind_param('s', $email);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();

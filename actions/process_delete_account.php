@@ -30,7 +30,7 @@ if (!$row || !password_verify($delete_pwd, $row['password'])) {
 }
 
 // Delete the account
-$stmt = $conn->prepare("DELETE FROM users WHERE user_id = ?");
+$stmt = $conn->prepare("UPDATE users SET is_deleted = 1 WHERE user_id = ?");
 $stmt->bind_param('i', $user_id);
 $stmt->execute();
 $stmt->close();

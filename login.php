@@ -15,6 +15,10 @@
                     New here? <a href="register.php" style="color: var(--pulse-accent); text-decoration:none;">Create an account</a>.
                 </p>
 
+                <?php if (isset($_GET['success']) && $_GET['success'] === 'pwdreset'): ?>
+                <div class="alert-pulse-success mb-4">✓ Password reset successfully. You can now sign in.</div>
+                <?php endif; ?>
+
                 <?php if (isset($_GET['error'])): ?>
                 <div class="alert-pulse mb-4">
                     <?php
@@ -64,8 +68,6 @@
 
                 <p style="text-align:center; margin-top:20px;">
                     <a href="forgot_password.php" style="color: var(--pulse-muted); font-size:0.78rem; text-decoration:none;">Forgot your password?</a>
-                    &nbsp;·&nbsp;
-                    <a href="contact.php" style="color: var(--pulse-muted); font-size:0.78rem; text-decoration:none;">Need help?</a>
                 </p>
             </div>
         </main>
