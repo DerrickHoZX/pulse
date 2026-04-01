@@ -2,8 +2,39 @@
 include "../inc/admin_check.inc.php";
 require_once "../inc/db.inc.php";
 $basePath = "../";
-
 $error = '';
+
+function uploadEventImage(array $file, string $type): string
+{
+    if (empty($file['name']) || ($file['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+        return '';
+    }
+
+    if (($file['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
+        throw new Exception("Failed to upload {$type} image.");
+    }
+
+    $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+    if (!in_array($ext, $allowed, true)) {
+        throw new Exception("Invalid {$type} image format. Use JPG, JPEG, PNG or WEBP.");
+    }
+
+    $uploadDir = __DIR__ . '/../uploads/events/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0775, true);
+    }
+
+    $filename = $type . '-' . time() . '-' . bin2hex(random_bytes(4)) . '.' . $ext;
+    $targetPath = $uploadDir . $filename;
+
+    if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
+        throw new Exception("Failed to save {$type} image.");
+    }
+
+    return 'uploads/events/' . $filename;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $conn = getDBConnection();
@@ -16,9 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $event_time = $_POST['event_time'] ?? '';
         $venue_id = intval($_POST['venue_id'] ?? 0) ?: null;
         $description = trim($_POST['description'] ?? '');
-        $img_banner = trim($_POST['img_banner'] ?? '');
-        $img_poster = trim($_POST['img_poster'] ?? '');
-        $img_seatmap = trim($_POST['img_seatmap'] ?? '');
+        $img_banner = uploadEventImage($_FILES['img_banner'] ?? [], 'banner');
+        $img_poster = uploadEventImage($_FILES['img_poster'] ?? [], 'poster');
+        $img_seatmap = uploadEventImage($_FILES['img_seatmap'] ?? [], 'seatmap');
         $is_active = isset($_POST['is_active']) ? 1 : 0;
 
         if (!$title || !$event_date) {
@@ -134,7 +165,7 @@ $conn->close();
         <?php endif; ?>
 
         <div class="admin-form-card">
-            <form method="POST" action="add_event.php">
+            <form method="POST" enctype="multipart/form-data" action="add_event.php">
 
                 <div class="mb-3">
                     <label class="form-label admin-form-label">Event Name</label>
@@ -176,24 +207,21 @@ $conn->close();
                 <div class="mb-4">
                     <label class="form-label admin-form-label">Event Images</label>
                     <div class="mb-2">
-                        <label class="form-label admin-form-label" style="font-size:0.78rem;">Banner Image URL</label>
-                        <input type="url" name="img_banner" class="form-control admin-form-control"
-                            placeholder="https://example.com/banner.jpg">
+                        <label class="form-label admin-form-label" style="font-size:0.78rem;">Banner Image</label>
+                        <input type="file" name="img_banner" accept="image/*" class="form-control admin-form-control">
                         <small style="color:var(--pulse-muted);">Main blurred background on the event detail
                             page.</small>
                     </div>
                     <div class="mb-2">
                         <label class="form-label admin-form-label" style="font-size:0.78rem;">Poster / Thumbnail
-                            URL</label>
-                        <input type="url" name="img_poster" class="form-control admin-form-control"
-                            placeholder="https://example.com/poster.jpg">
+                            Image</label>
+                        <input type="file" name="img_poster" accept="image/*" class="form-control admin-form-control">
                         <small style="color:var(--pulse-muted);">Portrait image shown on the event card and detail
                             page.</small>
                     </div>
                     <div class="mb-2">
-                        <label class="form-label admin-form-label" style="font-size:0.78rem;">Seat Map URL</label>
-                        <input type="url" name="img_seatmap" class="form-control admin-form-control"
-                            placeholder="https://example.com/seatmap.jpg">
+                        <label class="form-label admin-form-label" style="font-size:0.78rem;">Seat Map Image</label>
+                        <input type="file" name="img_seatmap" accept="image/*" class="form-control admin-form-control">
                         <small style="color:var(--pulse-muted);">Optional. Enables "View Seat Map" button on event
                             page.</small>
                     </div>
