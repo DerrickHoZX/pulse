@@ -6,40 +6,57 @@ $basePath = "../";
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $conn        = getDBConnection();
-    $title       = trim($_POST['title'] ?? '');
-    $category    = trim($_POST['category'] ?? '');
-    $event_date  = $_POST['event_date'] ?? '';
-    $event_time  = $_POST['event_time'] ?? '';
-    $venue_id    = intval($_POST['venue_id'] ?? 0) ?: null;
+    $conn = getDBConnection();
+    $title = trim($_POST['title'] ?? '');
+    $category = trim($_POST['category'] ?? '');
+    $event_date = $_POST['event_date'] ?? '';
+    $event_time = $_POST['event_time'] ?? '';
+    $venue_id = intval($_POST['venue_id'] ?? 0) ?: null;
     $description = trim($_POST['description'] ?? '');
-    $img_url     = trim($_POST['img_url'] ?? '');
-    $is_active   = isset($_POST['is_active']) ? 1 : 0;
+    $img_banner = trim($_POST['img_banner'] ?? '');
+    $img_poster = trim($_POST['img_poster'] ?? '');
+    $img_seatmap = trim($_POST['img_seatmap'] ?? '');
+    $is_active = isset($_POST['is_active']) ? 1 : 0;
 
     if (!$title || !$event_date) {
         $error = 'Event name and date are required.';
     } else {
         // Insert event
-        $stmt = $conn->prepare("INSERT INTO events (title, category, event_date, event_time, venue_id, description, img_url, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param('ssssissi', $title, $category, $event_date, $event_time, $venue_id, $description, $img_url, $is_active);
+        $stmt = $conn->prepare("INSERT INTO events (title, category, event_date, event_time, venue_id, description, is_active) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param('ssssisi', $title, $category, $event_date, $event_time, $venue_id, $description, $is_active);
         $stmt->execute();
         $new_event_id = $conn->insert_id;
         $stmt->close();
 
+        // Insert images into event_images
+        $img_stmt = $conn->prepare("INSERT INTO event_images (event_id, image_type, image_path) VALUES (?, ?, ?)");
+        foreach ([
+            'banner' => $img_banner,
+            'poster' => $img_poster,
+            'seatmap' => $img_seatmap,
+        ] as $type => $url) {
+            if ($url) {
+                $img_stmt->bind_param('iss', $new_event_id, $type, $url);
+                $img_stmt->execute();
+            }
+        }
+        $img_stmt->close();
+
         // Insert seat sections + generate individual seats
         $labels = $_POST['section_label'] ?? [];
         $prices = $_POST['section_price'] ?? [];
-        $seats  = $_POST['section_seats'] ?? [];
+        $seats = $_POST['section_seats'] ?? [];
 
-        $sec  = $conn->prepare("INSERT INTO seat_sections (event_id, label, price, total_seats) VALUES (?, ?, ?, ?)");
+        $sec = $conn->prepare("INSERT INTO seat_sections (event_id, label, price, total_seats) VALUES (?, ?, ?, ?)");
         $seat = $conn->prepare("INSERT INTO seats (section_id, row_label, seat_num, status) VALUES (?, ?, ?, 'available')");
 
         foreach ($labels as $i => $label) {
-            $label      = trim($label);
-            $price      = floatval($prices[$i] ?? 0);
+            $label = trim($label);
+            $price = floatval($prices[$i] ?? 0);
             $totalSeats = intval($seats[$i] ?? 0);
 
-            if (!$label) continue;
+            if (!$label)
+                continue;
 
             // Insert section
             $sec->bind_param('isdi', $new_event_id, $label, $price, $totalSeats);
@@ -54,7 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             for ($r = 0; $r < $rows; $r++) {
                 $rowLabel = chr(65 + $r); // A, B, C...
                 for ($s = 1; $s <= $seatsPerRow; $s++) {
-                    if ($seatCount >= $totalSeats) break;
+                    if ($seatCount >= $totalSeats)
+                        break;
                     $seat->bind_param('isi', $section_id, $rowLabel, $s);
                     $seat->execute();
                     $seatCount++;
@@ -71,16 +89,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$conn   = getDBConnection();
+$conn = getDBConnection();
 $venues = $conn->query("SELECT venue_id, name FROM venues ORDER BY name")->fetch_all(MYSQLI_ASSOC);
 $conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>PULSE Admin - Add Event</title>
     <?php include "../inc/head.inc.php"; ?>
 </head>
+
 <body>
     <?php include "../inc/nav.inc.php"; ?>
     <div style="margin-top: 100px;"></div>
@@ -134,12 +154,32 @@ $conn->close();
                     <label class="form-label admin-form-label">Description</label>
                     <textarea name="description" rows="5" class="form-control admin-form-control"></textarea>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label admin-form-label">Thumbnail Image URL</label>
-                    <input type="url" name="img_url" class="form-control admin-form-control" placeholder="https://example.com/image.jpg">
-                    <small style="color:var(--pulse-muted);">Paste a direct image URL. This shows as the event card thumbnail.</small>
+                <!-- Event Images -->
+                <div class="mb-4">
+                    <label class="form-label admin-form-label">Event Images</label>
+                    <div class="mb-2">
+                        <label class="form-label admin-form-label" style="font-size:0.78rem;">Banner Image URL</label>
+                        <input type="url" name="img_banner" class="form-control admin-form-control"
+                            placeholder="https://example.com/banner.jpg">
+                        <small style="color:var(--pulse-muted);">Main blurred background on the event detail
+                            page.</small>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label admin-form-label" style="font-size:0.78rem;">Poster / Thumbnail
+                            URL</label>
+                        <input type="url" name="img_poster" class="form-control admin-form-control"
+                            placeholder="https://example.com/poster.jpg">
+                        <small style="color:var(--pulse-muted);">Portrait image shown on the event card and detail
+                            page.</small>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label admin-form-label" style="font-size:0.78rem;">Seat Map URL</label>
+                        <input type="url" name="img_seatmap" class="form-control admin-form-control"
+                            placeholder="https://example.com/seatmap.jpg">
+                        <small style="color:var(--pulse-muted);">Optional. Enables "View Seat Map" button on event
+                            page.</small>
+                    </div>
                 </div>
-
                 <div class="mb-3 form-check">
                     <input type="checkbox" name="is_active" class="form-check-input" id="is_active" checked>
                     <label class="form-check-label admin-form-label" for="is_active">Active (visible to public)</label>
@@ -150,13 +190,18 @@ $conn->close();
                     <label class="form-label admin-form-label">Seat Categories & Pricing</label>
                     <div id="sections-wrapper">
                         <div class="section-row d-flex gap-2 mb-2 align-items-center">
-                            <input type="text" name="section_label[]" class="form-control admin-form-control" placeholder="e.g. CAT 1 - Floor" style="flex:2;">
-                            <input type="number" step="0.01" min="0" name="section_price[]" class="form-control admin-form-control" placeholder="Price (S$)" style="flex:1;">
-                            <input type="number" min="0" name="section_seats[]" class="form-control admin-form-control" placeholder="No. of Seats" style="flex:1;">
-                            <button type="button" class="btn btn-outline-danger btn-sm remove-section" style="white-space:nowrap;">✕ Remove</button>
+                            <input type="text" name="section_label[]" class="form-control admin-form-control"
+                                placeholder="e.g. CAT 1 - Floor" style="flex:2;">
+                            <input type="number" step="0.01" min="0" name="section_price[]"
+                                class="form-control admin-form-control" placeholder="Price (S$)" style="flex:1;">
+                            <input type="number" min="0" name="section_seats[]" class="form-control admin-form-control"
+                                placeholder="No. of Seats" style="flex:1;">
+                            <button type="button" class="btn btn-outline-danger btn-sm remove-section"
+                                style="white-space:nowrap;">✕ Remove</button>
                         </div>
                     </div>
-                    <button type="button" id="add-section" class="btn btn-outline-light btn-sm mt-2">+ Add Category</button>
+                    <button type="button" id="add-section" class="btn btn-outline-light btn-sm mt-2">+ Add
+                        Category</button>
                 </div>
 
                 <div class="d-flex gap-2 mt-2">
@@ -197,4 +242,5 @@ $conn->close();
         });
     </script>
 </body>
+
 </html>
