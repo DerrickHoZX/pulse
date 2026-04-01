@@ -139,6 +139,15 @@ $conn->close();
                         <a href="manage_users.php" class="btn-dark-solid mt-2">Open</a>
                     </div>
                 </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="card h-100 border-0 shadow-sm p-4 rounded-4">
+                        <h5>User Messages</h5>
+                        <p style="color: var(--pulse-muted); font-weight:300;">
+                            View and respond to enquiries submitted through the contact form.
+                        </p>
+                        <a href="manage_messages.php" class="btn-dark-solid mt-2">View Messages</a>
+                    </div>
+                </div>
             </div>
         </section>
 

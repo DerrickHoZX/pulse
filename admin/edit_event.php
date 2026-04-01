@@ -12,123 +12,171 @@ if (!$event_id) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title       = trim($_POST['title'] ?? '');
-    $category    = trim($_POST['category'] ?? '');
-    $event_date  = $_POST['event_date'] ?? '';
-    $event_time  = $_POST['event_time'] ?? '';
-    $venue_id    = intval($_POST['venue_id'] ?? 0) ?: null;
-    $description = trim($_POST['description'] ?? '');
-    $is_active   = isset($_POST['is_active']) ? 1 : 0;
+    $conn->begin_transaction();
 
-    // Update event (no img_url)
-    $stmt = $conn->prepare("UPDATE events SET title=?, category=?, event_date=?, event_time=?, venue_id=?, description=?, is_active=? WHERE event_id=?");
-    $stmt->bind_param('ssssisii', $title, $category, $event_date, $event_time, $venue_id, $description, $is_active, $event_id);
-    $stmt->execute();
-    $stmt->close();
+    try {
+        $title       = trim($_POST['title'] ?? '');
+        $category    = trim($_POST['category'] ?? '');
+        $event_date  = $_POST['event_date'] ?? '';
+        $event_time  = $_POST['event_time'] ?? '';
+        $venue_id    = intval($_POST['venue_id'] ?? 0) ?: null;
+        $description = trim($_POST['description'] ?? '');
+        $is_active   = isset($_POST['is_active']) ? 1 : 0;
 
-    // Update images — delete old banner/poster/seatmap, re-insert
-    $img_banner  = trim($_POST['img_banner'] ?? '');
-    $img_poster  = trim($_POST['img_poster'] ?? '');
-    $img_seatmap = trim($_POST['img_seatmap'] ?? '');
-
-    $del_img = $conn->prepare("DELETE FROM event_images WHERE event_id = ? AND image_type IN ('banner','poster','seatmap')");
-    $del_img->bind_param('i', $event_id);
-    $del_img->execute();
-    $del_img->close();
-
-    $img_stmt = $conn->prepare("INSERT INTO event_images (event_id, image_type, image_path) VALUES (?, ?, ?)");
-    foreach ([
-        'banner'  => $img_banner,
-        'poster'  => $img_poster,
-        'seatmap' => $img_seatmap,
-    ] as $type => $url) {
-        if ($url) {
-            $img_stmt->bind_param('iss', $event_id, $type, $url);
-            $img_stmt->execute();
+        $stmt = $conn->prepare("UPDATE events SET title=?, category=?, event_date=?, event_time=?, venue_id=?, description=?, is_active=? WHERE event_id=?");
+        if (!$stmt) {
+            throw new Exception($conn->error);
         }
-    }
-    $img_stmt->close();
+        $stmt->bind_param('ssssisii', $title, $category, $event_date, $event_time, $venue_id, $description, $is_active, $event_id);
+        if (!$stmt->execute()) {
+            throw new Exception($stmt->error);
+        }
+        $stmt->close();
 
-    // Update existing sections
-    $sec_ids    = $_POST['section_id'] ?? [];
-    $sec_labels = $_POST['section_label'] ?? [];
-    $sec_prices = $_POST['section_price'] ?? [];
-    $sec_seats  = $_POST['section_seats'] ?? [];
+        $img_banner  = trim($_POST['img_banner'] ?? '');
+        $img_poster  = trim($_POST['img_poster'] ?? '');
+        $img_seatmap = trim($_POST['img_seatmap'] ?? '');
 
-    $upd      = $conn->prepare("UPDATE seat_sections SET label=?, price=?, total_seats=? WHERE section_id=? AND event_id=?");
-    $del_bs   = $conn->prepare("DELETE FROM booking_seats WHERE seat_id IN (SELECT seat_id FROM seats WHERE section_id=?)");
-    $del      = $conn->prepare("DELETE FROM seats WHERE section_id=?");
-    $seat     = $conn->prepare("INSERT INTO seats (section_id, row_label, seat_num, status) VALUES (?, ?, ?, 'available')");
+        $del_img = $conn->prepare("DELETE FROM event_images WHERE event_id = ? AND image_type IN ('banner','poster','seatmap')");
+        if (!$del_img) {
+            throw new Exception($conn->error);
+        }
+        $del_img->bind_param('i', $event_id);
+        if (!$del_img->execute()) {
+            throw new Exception($del_img->error);
+        }
+        $del_img->close();
 
-    foreach ($sec_ids as $i => $sec_id) {
-        $sec_id     = intval($sec_id);
-        $label      = trim($sec_labels[$i] ?? '');
-        $price      = floatval($sec_prices[$i] ?? 0);
-        $totalSeats = intval($sec_seats[$i] ?? 0);
-        if (!$label) continue;
-
-        $upd->bind_param('sdiii', $label, $price, $totalSeats, $sec_id, $event_id);
-        $upd->execute();
-
-        $del_bs->bind_param('i', $sec_id);
-        $del_bs->execute();
-
-        $del->bind_param('i', $sec_id);
-        $del->execute();
-
-        $seatsPerRow = 10;
-        $rows        = ceil($totalSeats / $seatsPerRow);
-        $seatCount   = 0;
-        for ($r = 0; $r < $rows; $r++) {
-            $rowLabel = chr(65 + $r);
-            for ($s = 1; $s <= $seatsPerRow; $s++) {
-                if ($seatCount >= $totalSeats) break;
-                $seat->bind_param('isi', $sec_id, $rowLabel, $s);
-                $seat->execute();
-                $seatCount++;
+        $img_stmt = $conn->prepare("INSERT INTO event_images (event_id, image_type, image_path) VALUES (?, ?, ?)");
+        if (!$img_stmt) {
+            throw new Exception($conn->error);
+        }
+        foreach ([
+            'banner'  => $img_banner,
+            'poster'  => $img_poster,
+            'seatmap' => $img_seatmap,
+        ] as $type => $url) {
+            if ($url) {
+                $img_stmt->bind_param('iss', $event_id, $type, $url);
+                if (!$img_stmt->execute()) {
+                    throw new Exception($img_stmt->error);
+                }
             }
         }
-    }
-    $upd->close();
-    $del_bs->close();
-    $del->close();
+        $img_stmt->close();
 
-    // Insert new sections + generate their seats
-    $new_labels = $_POST['new_section_label'] ?? [];
-    $new_prices = $_POST['new_section_price'] ?? [];
-    $new_seats  = $_POST['new_section_seats'] ?? [];
+        $sec_ids    = $_POST['section_id'] ?? [];
+        $sec_labels = $_POST['section_label'] ?? [];
+        $sec_prices = $_POST['section_price'] ?? [];
+        $sec_seats  = $_POST['section_seats'] ?? [];
 
-    $ins = $conn->prepare("INSERT INTO seat_sections (event_id, label, price, total_seats) VALUES (?, ?, ?, ?)");
+        $upd = $conn->prepare("UPDATE seat_sections SET label=?, price=?, total_seats=? WHERE section_id=? AND event_id=?");
+        $del_bs = $conn->prepare("
+            DELETE bs
+            FROM booking_seats bs
+            JOIN seats s ON bs.seat_id = s.seat_id
+            WHERE s.section_id = ?
+        ");
+        $del = $conn->prepare("DELETE FROM seats WHERE section_id=?");
+        $seat = $conn->prepare("INSERT INTO seats (section_id, row_label, seat_num, status) VALUES (?, ?, ?, 'available')");
 
-    foreach ($new_labels as $i => $label) {
-        $label      = trim($label);
-        $price      = floatval($new_prices[$i] ?? 0);
-        $totalSeats = intval($new_seats[$i] ?? 0);
-        if (!$label) continue;
+        if (!$upd || !$del_bs || !$del || !$seat) {
+            throw new Exception($conn->error);
+        }
 
-        $ins->bind_param('isdi', $event_id, $label, $price, $totalSeats);
-        $ins->execute();
-        $new_sec_id = $conn->insert_id;
+        foreach ($sec_ids as $i => $sec_id) {
+            $sec_id     = intval($sec_id);
+            $label      = trim($sec_labels[$i] ?? '');
+            $price      = floatval($sec_prices[$i] ?? 0);
+            $totalSeats = intval($sec_seats[$i] ?? 0);
 
-        $seatsPerRow = 10;
-        $rows        = ceil($totalSeats / $seatsPerRow);
-        $seatCount   = 0;
-        for ($r = 0; $r < $rows; $r++) {
-            $rowLabel = chr(65 + $r);
-            for ($s = 1; $s <= $seatsPerRow; $s++) {
-                if ($seatCount >= $totalSeats) break;
-                $seat->bind_param('isi', $new_sec_id, $rowLabel, $s);
-                $seat->execute();
-                $seatCount++;
+            if (!$label) continue;
+
+            $upd->bind_param('sdiii', $label, $price, $totalSeats, $sec_id, $event_id);
+            if (!$upd->execute()) {
+                throw new Exception($upd->error);
+            }
+
+            $del_bs->bind_param('i', $sec_id);
+            if (!$del_bs->execute()) {
+                throw new Exception($del_bs->error);
+            }
+
+            $del->bind_param('i', $sec_id);
+            if (!$del->execute()) {
+                throw new Exception($del->error);
+            }
+
+            $seatsPerRow = 10;
+            $rows = ceil($totalSeats / $seatsPerRow);
+            $seatCount = 0;
+
+            for ($r = 0; $r < $rows; $r++) {
+                $rowLabel = chr(65 + $r);
+                for ($s = 1; $s <= $seatsPerRow; $s++) {
+                    if ($seatCount >= $totalSeats) break;
+                    $seat->bind_param('isi', $sec_id, $rowLabel, $s);
+                    if (!$seat->execute()) {
+                        throw new Exception($seat->error);
+                    }
+                    $seatCount++;
+                }
             }
         }
-    }
-    $ins->close();
-    $seat->close();
-    $conn->close();
 
-    header("Location: manage_events.php?updated=1");
-    exit;
+        $upd->close();
+        $del_bs->close();
+        $del->close();
+
+        $new_labels = $_POST['new_section_label'] ?? [];
+        $new_prices = $_POST['new_section_price'] ?? [];
+        $new_seats  = $_POST['new_section_seats'] ?? [];
+
+        $ins = $conn->prepare("INSERT INTO seat_sections (event_id, label, price, total_seats) VALUES (?, ?, ?, ?)");
+        if (!$ins) {
+            throw new Exception($conn->error);
+        }
+
+        foreach ($new_labels as $i => $label) {
+            $label      = trim($label);
+            $price      = floatval($new_prices[$i] ?? 0);
+            $totalSeats = intval($new_seats[$i] ?? 0);
+            if (!$label) continue;
+
+            $ins->bind_param('isdi', $event_id, $label, $price, $totalSeats);
+            if (!$ins->execute()) {
+                throw new Exception($ins->error);
+            }
+            $new_sec_id = $conn->insert_id;
+
+            $seatsPerRow = 10;
+            $rows = ceil($totalSeats / $seatsPerRow);
+            $seatCount = 0;
+            for ($r = 0; $r < $rows; $r++) {
+                $rowLabel = chr(65 + $r);
+                for ($s = 1; $s <= $seatsPerRow; $s++) {
+                    if ($seatCount >= $totalSeats) break;
+                    $seat->bind_param('isi', $new_sec_id, $rowLabel, $s);
+                    if (!$seat->execute()) {
+                        throw new Exception($seat->error);
+                    }
+                    $seatCount++;
+                }
+            }
+        }
+
+        $ins->close();
+        $seat->close();
+
+        $conn->commit();
+        $conn->close();
+
+        header("Location: manage_events.php?updated=1");
+        exit;
+    } catch (Throwable $e) {
+        $conn->rollback();
+        die("Edit failed: " . $e->getMessage());
+    }
 }
 
 // Fetch event

@@ -7,29 +7,39 @@ $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $conn = getDBConnection();
-    $title = trim($_POST['title'] ?? '');
-    $category = trim($_POST['category'] ?? '');
-    $event_date = $_POST['event_date'] ?? '';
-    $event_time = $_POST['event_time'] ?? '';
-    $venue_id = intval($_POST['venue_id'] ?? 0) ?: null;
-    $description = trim($_POST['description'] ?? '');
-    $img_banner = trim($_POST['img_banner'] ?? '');
-    $img_poster = trim($_POST['img_poster'] ?? '');
-    $img_seatmap = trim($_POST['img_seatmap'] ?? '');
-    $is_active = isset($_POST['is_active']) ? 1 : 0;
+    $conn->begin_transaction();
 
-    if (!$title || !$event_date) {
-        $error = 'Event name and date are required.';
-    } else {
-        // Insert event
+    try {
+        $title = trim($_POST['title'] ?? '');
+        $category = trim($_POST['category'] ?? '');
+        $event_date = $_POST['event_date'] ?? '';
+        $event_time = $_POST['event_time'] ?? '';
+        $venue_id = intval($_POST['venue_id'] ?? 0) ?: null;
+        $description = trim($_POST['description'] ?? '');
+        $img_banner = trim($_POST['img_banner'] ?? '');
+        $img_poster = trim($_POST['img_poster'] ?? '');
+        $img_seatmap = trim($_POST['img_seatmap'] ?? '');
+        $is_active = isset($_POST['is_active']) ? 1 : 0;
+
+        if (!$title || !$event_date) {
+            throw new Exception('Event name and date are required.');
+        }
+
         $stmt = $conn->prepare("INSERT INTO events (title, category, event_date, event_time, venue_id, description, is_active) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        if (!$stmt) {
+            throw new Exception($conn->error);
+        }
+
         $stmt->bind_param('ssssisi', $title, $category, $event_date, $event_time, $venue_id, $description, $is_active);
         $stmt->execute();
         $new_event_id = $conn->insert_id;
         $stmt->close();
 
-        // Insert images into event_images
         $img_stmt = $conn->prepare("INSERT INTO event_images (event_id, image_type, image_path) VALUES (?, ?, ?)");
+        if (!$img_stmt) {
+            throw new Exception($conn->error);
+        }
+
         foreach ([
             'banner' => $img_banner,
             'poster' => $img_poster,
@@ -42,7 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $img_stmt->close();
 
-        // Insert seat sections + generate individual seats
         $labels = $_POST['section_label'] ?? [];
         $prices = $_POST['section_price'] ?? [];
         $seats = $_POST['section_seats'] ?? [];
@@ -50,29 +59,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $sec = $conn->prepare("INSERT INTO seat_sections (event_id, label, price, total_seats) VALUES (?, ?, ?, ?)");
         $seat = $conn->prepare("INSERT INTO seats (section_id, row_label, seat_num, status) VALUES (?, ?, ?, 'available')");
 
+        if (!$sec || !$seat) {
+            throw new Exception($conn->error);
+        }
+
         foreach ($labels as $i => $label) {
             $label = trim($label);
             $price = floatval($prices[$i] ?? 0);
             $totalSeats = intval($seats[$i] ?? 0);
 
-            if (!$label)
+            if (!$label) {
                 continue;
+            }
 
-            // Insert section
             $sec->bind_param('isdi', $new_event_id, $label, $price, $totalSeats);
             $sec->execute();
             $section_id = $conn->insert_id;
 
-            // Generate seats: rows of 10
             $seatsPerRow = 10;
             $rows = ceil($totalSeats / $seatsPerRow);
             $seatCount = 0;
 
             for ($r = 0; $r < $rows; $r++) {
-                $rowLabel = chr(65 + $r); // A, B, C...
+                $rowLabel = chr(65 + $r);
                 for ($s = 1; $s <= $seatsPerRow; $s++) {
-                    if ($seatCount >= $totalSeats)
+                    if ($seatCount >= $totalSeats) {
                         break;
+                    }
                     $seat->bind_param('isi', $section_id, $rowLabel, $s);
                     $seat->execute();
                     $seatCount++;
@@ -82,10 +95,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $sec->close();
         $seat->close();
+
+        $conn->commit();
         $conn->close();
 
         header("Location: manage_events.php?added=1");
         exit;
+    } catch (Throwable $e) {
+        $conn->rollback();
+        $error = $e->getMessage();
     }
 }
 
