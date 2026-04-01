@@ -136,6 +136,7 @@ $categories = [
                     <path d="M12 12L15.5 15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
                 </svg>
                 <input type="text" id="searchInput" value="<?= htmlspecialchars($q) ?>"
+                    aria-label="Search events"
                     placeholder="Artist, event, or venue…"
                     onkeydown="if(event.key==='Enter'){document.getElementById('qInput').value=this.value;document.getElementById('filterForm').submit();}">
                 <button type="button"
@@ -152,7 +153,7 @@ $categories = [
                 <?php endforeach; ?>
             </select>
 
-            <input type="date" class="filter-select" value="<?= htmlspecialchars($date) ?>" style="color-scheme:dark;" aria-label="Filter by date"
+            <input type="date" class="filter-select" aria-label="Filter by date" value="<?= htmlspecialchars($date) ?>" style="color-scheme:dark;"
                 onchange="document.getElementById('dateInput').value=this.value;document.getElementById('filterForm').submit();">
 
             <?php if ($q || $cat || $venue_id || $date): ?>

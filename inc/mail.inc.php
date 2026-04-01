@@ -7,7 +7,7 @@ require_once __DIR__ . '/../vendor/PHPMailer/src/SMTP.php';
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
-function pulseSendMail(string $toEmail, string $toName, string $subject, string $htmlBody, string $textBody = ''): array {
+function pulseSendMail(string $toEmail, string $toName, string $subject, string $htmlBody, string $textBody = '', string $pdfAttachment = '', string $pdfFilename = 'ticket.pdf'): array {
     if (!MAIL_ENABLED) {
         return ['success' => false, 'message' => 'Mail is disabled in configuration.'];
     }
@@ -31,6 +31,11 @@ function pulseSendMail(string $toEmail, string $toName, string $subject, string 
         $mail->Subject = $subject;
         $mail->Body = $htmlBody;
         $mail->AltBody = $textBody ?: strip_tags(str_replace(['<br>', '<br/>', '<br />'], PHP_EOL, $htmlBody));
+
+        if ($pdfAttachment !== '') {
+            $mail->addStringAttachment($pdfAttachment, $pdfFilename, 'base64', 'application/pdf');
+        }
+
         $mail->send();
 
         return ['success' => true, 'message' => 'Mail sent.'];
@@ -61,7 +66,8 @@ function buildBookingConfirmationMail(array $booking): array {
                     <tr><td style="padding:8px 0;color:#b8b0a7;">Payment</td><td style="padding:8px 0;text-align:right;">' . htmlspecialchars($booking['payment_label']) . '</td></tr>
                     <tr><td style="padding:8px 0;color:#b8b0a7;">Total</td><td style="padding:8px 0;text-align:right;">S$' . htmlspecialchars(number_format((float) $booking['total'], 2)) . '</td></tr>
                 </table>
-                <p style="margin:24px 0 0;color:#b8b0a7;">You can review your booking any time from your PULSE dashboard.</p>
+                <p style="margin:24px 0 0;color:#b8b0a7;">Your e-ticket is attached as a PDF. Present it (printed or on your phone) at the venue entrance.</p>
+                <p style="margin:8px 0 0;color:#b8b0a7;">You can also review your booking any time from your PULSE dashboard.</p>
             </div>
         </div>';
 

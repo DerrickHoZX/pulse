@@ -32,7 +32,7 @@
                 <div class="mb-4">
                     <label for="email" class="form-label">Email</label>
                     <input required maxlength="100" type="email" id="email" name="email"
-                        class="form-control" placeholder="you@example.com">
+                        autocomplete="email" class="form-control" placeholder="you@example.com">
                 </div>
                 <button type="submit" class="btn btn-accent w-100" style="justify-content:center; padding:14px;">
                     Send Reset Link

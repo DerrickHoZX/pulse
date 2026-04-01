@@ -3,6 +3,17 @@ include "../inc/admin_check.inc.php";
 require_once "../inc/db.inc.php";
 $basePath = "../";
 
+function paymentLabel(string $payment): string {
+    $normalized = strtolower(preg_replace('/[^a-z]/', '', $payment));
+
+    return match (true) {
+        $normalized === 'paynow' => 'PayNow',
+        in_array($normalized, ['card', 'creditcard', 'debitcard', 'stripe'], true) => 'Card',
+        default => 'In Person',
+    };
+}
+
+
 $conn = getDBConnection();
 $message = '';
 $error   = '';
@@ -118,10 +129,11 @@ $conn->close();
         <!-- Filters -->
         <form method="GET" action="manage_bookings.php" class="d-flex gap-2 flex-wrap mb-4">
             <input type="text" name="q" class="form-control admin-form-control"
+                   aria-label="Search bookings"
                    style="max-width:280px;" placeholder="Search customer, email, event..."
                    value="<?= htmlspecialchars($search) ?>">
 
-            <select name="status" class="form-control admin-form-control" style="max-width:160px;"
+            <select name="status" class="form-control admin-form-control" aria-label="Filter by status" style="max-width:160px;"
                     onchange="this.form.submit()">
                 <option value="">All Statuses</option>
                 <option value="pending"   <?= $filter_status === 'pending'   ? 'selected' : '' ?>>Pending</option>
@@ -169,7 +181,7 @@ $conn->close();
                                 <td>S$<?= number_format($b['total'], 2) ?></td>
                                 <td>
                                     <span style="font-size:0.78rem;color:var(--pulse-muted);">
-                                        <?= $b['payment'] === 'paynow' ? 'PayNow' : 'In Person' ?>
+                                        <?= htmlspecialchars(paymentLabel($b['payment'])) ?>
                                     </span>
                                 </td>
                                 <td style="font-size:0.82rem;">
@@ -218,3 +230,5 @@ $conn->close();
     <?php include "../inc/footer.inc.php"; ?>
 </body>
 </html>
+
+

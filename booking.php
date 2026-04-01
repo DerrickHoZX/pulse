@@ -69,7 +69,7 @@ function cleanLabel(string $label): string {
 <body>
     <?php include "inc/nav.inc.php" ?>
 
-    <div class="booking-page-wrapper">
+    <main class="booking-page-wrapper">
         <div class="container" style="max-width:1100px;">
 
             <!-- Steps bar pushed down below navbar -->
@@ -126,9 +126,9 @@ function cleanLabel(string $label): string {
 
                                     <?php if (!$soldOut): ?>
                                     <div class="qty-control">
-                                        <button type="button" class="qty-btn" onclick="changeQty(this, -1)">-</button>
+                                        <button type="button" class="qty-btn" onclick="changeQty(this, -1)" aria-label="Decrease quantity">-</button>
                                         <span class="qty-val">0</span>
-                                        <button type="button" class="qty-btn" onclick="changeQty(this, 1)">+</button>
+                                        <button type="button" class="qty-btn" onclick="changeQty(this, 1)" aria-label="Increase quantity">+</button>
                                     </div>
                                     <?php else: ?>
                                     <div class="soldout-badge">Sold Out</div>
@@ -165,25 +165,25 @@ function cleanLabel(string $label): string {
                             <div class="booking-form-title">Your Details</div>
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label" style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--pulse-muted);margin-bottom:8px;display:block;">First Name</label>
-                                    <input type="text" class="form-control"
+                                    <label for="firstName" class="form-label" style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--pulse-muted);margin-bottom:8px;display:block;">First Name</label>
+                                    <input type="text" class="form-control" id="firstName" autocomplete="given-name"
                                         style="background:var(--pulse-card);border:1px solid var(--pulse-border);border-radius:0;color:var(--pulse-white);padding:12px 16px;font-family:var(--font-body);font-size:0.88rem;width:100%;"
                                         value="<?= htmlspecialchars($_SESSION['fname'] ?? '') ?>" readonly>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label" style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--pulse-muted);margin-bottom:8px;display:block;">Last Name</label>
-                                    <input type="text" class="form-control" id="lastName" placeholder="Last name"
+                                    <label for="lastName" class="form-label" style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--pulse-muted);margin-bottom:8px;display:block;">Last Name</label>
+                                    <input type="text" class="form-control" id="lastName" placeholder="Last name" autocomplete="family-name"
                                         style="background:var(--pulse-card);border:1px solid var(--pulse-border);border-radius:0;color:var(--pulse-white);padding:12px 16px;font-family:var(--font-body);font-size:0.88rem;width:100%;">
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label" style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--pulse-muted);margin-bottom:8px;display:block;">Email Address</label>
-                                    <input type="email" class="form-control"
+                                    <label for="emailAddr" class="form-label" style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--pulse-muted);margin-bottom:8px;display:block;">Email Address</label>
+                                    <input type="email" class="form-control" id="emailAddr" autocomplete="email"
                                         style="background:var(--pulse-card);border:1px solid var(--pulse-border);border-radius:0;color:var(--pulse-white);padding:12px 16px;font-family:var(--font-body);font-size:0.88rem;width:100%;"
                                         value="<?= htmlspecialchars($_SESSION['email'] ?? '') ?>" readonly>
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label" style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--pulse-muted);margin-bottom:8px;display:block;">Phone Number</label>
-                                    <input type="tel" class="form-control" id="phoneNum" placeholder="+65 9123 4567"
+                                    <label for="phoneNum" class="form-label" style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--pulse-muted);margin-bottom:8px;display:block;">Phone Number</label>
+                                    <input type="tel" class="form-control" id="phoneNum" placeholder="+65 9123 4567" autocomplete="tel"
                                         style="background:var(--pulse-card);border:1px solid var(--pulse-border);border-radius:0;color:var(--pulse-white);padding:12px 16px;font-family:var(--font-body);font-size:0.88rem;width:100%;">
                                 </div>
                             </div>
@@ -216,6 +216,18 @@ function cleanLabel(string $label): string {
                             <div class="payment-methods">
                                 <button type="button" class="payment-pill active" data-method="paynow">PayNow</button>
                                 <button type="button" class="payment-pill" data-method="inperson">Pay in Person</button>
+                                <button type="button" class="payment-pill" data-method="card">Card</button>
+                            </div>
+
+                            <div id="cardFields" style="display:none;">
+                                <div style="text-align:center;padding:32px 0 20px;">
+                                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" style="margin-bottom:14px;opacity:0.7;" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="4" y="10" width="40" height="28" rx="4" stroke="#9d96ff" stroke-width="2" fill="none"/>
+                                        <rect x="4" y="18" width="40" height="6" fill="#9d96ff" opacity="0.3"/>
+                                        <rect x="10" y="28" width="10" height="4" rx="1" fill="#9d96ff" opacity="0.6"/>
+                                    </svg>
+                                    <p style="color:var(--pulse-muted);font-size:0.88rem;margin:0;">You'll be securely redirected to Stripe<br>to complete your payment.</p>
+                                </div>
                             </div>
 
                             <div id="paynowFields">
@@ -286,7 +298,7 @@ function cleanLabel(string $label): string {
                 <input type="hidden" name="selections" id="selectionsInput" value="">
             </form>
         </div>
-    </div>
+    </main>
 
     <?php if ($mapImg): ?>
     <div class="seatmap-modal-overlay" id="seatMapModal" onclick="if(event.target===this)closeMapModal();">
@@ -296,7 +308,7 @@ function cleanLabel(string $label): string {
                     <div class="seatmap-modal-title"><?= htmlspecialchars($event['venue_name']) ?> &mdash; Seating Plan</div>
                     <div class="seatmap-modal-sub">For reference only. Layout may vary by event.</div>
                 </div>
-                <button class="seatmap-modal-close" onclick="closeMapModal()">X</button>
+                <button class="seatmap-modal-close" onclick="closeMapModal()" aria-label="Close seat map">X</button>
             </div>
             <div class="seatmap-modal-body">
                 <img src="<?= htmlspecialchars($mapImg) ?>" alt="<?= htmlspecialchars($event['venue_name']) ?> seating plan" style="width:100%;height:auto;display:block;">
@@ -414,8 +426,14 @@ function cleanLabel(string $label): string {
                 btn.classList.add('active');
                 currentPayment = btn.dataset.method;
                 document.getElementById('paymentInput').value = currentPayment;
-                document.getElementById('paynowFields').style.display = currentPayment === 'paynow' ? 'block' : 'none';
+                document.getElementById('paynowFields').style.display   = currentPayment === 'paynow'   ? 'block' : 'none';
                 document.getElementById('inpersonFields').style.display = currentPayment === 'inperson' ? 'block' : 'none';
+                document.getElementById('cardFields').style.display     = currentPayment === 'card'     ? 'block' : 'none';
+
+                const confirmBtn = document.getElementById('confirmBtn');
+                confirmBtn.innerHTML = currentPayment === 'card'
+                    ? 'Pay with Card <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
+                    : 'Confirm &amp; Book <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
             });
         });
     }
@@ -427,6 +445,27 @@ function cleanLabel(string $label): string {
 
         try {
             const form = document.getElementById('bookingForm');
+
+            // ── Card payment: redirect to Stripe Checkout ─────────────────
+            if (currentPayment === 'card') {
+                const response = await fetch('actions/create_stripe_checkout.php', {
+                    method: 'POST',
+                    body: new FormData(form)
+                });
+                const data = await response.json();
+
+                if (!data.success || !data.redirect) {
+                    alert(data.message || 'Could not start Stripe checkout. Please try again.');
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerHTML = 'Pay with Card <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+                    return;
+                }
+
+                window.location.href = data.redirect;
+                return;
+            }
+
+            // ── PayNow / In-Person: existing flow ─────────────────────────
             const response = await fetch(form.action, {
                 method: 'POST',
                 body: new FormData(form)

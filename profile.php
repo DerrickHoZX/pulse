@@ -69,19 +69,19 @@ $conn->close();
                     
                     <div class="row g-3 mb-3">
                         <div class="col-6">
-                            <label class="form-label">First Name</label>
-                            <input required maxlength="45" type="text" name="fname" class="form-control"
+                            <label for="profile_fname" class="form-label">First Name</label>
+                            <input required maxlength="45" type="text" id="profile_fname" name="fname" autocomplete="given-name" class="form-control"
                                 value="<?= htmlspecialchars($user['fname']) ?>">
                         </div>
                         <div class="col-6">
-                            <label class="form-label">Last Name</label>
-                            <input required maxlength="45" type="text" name="lname" class="form-control"
+                            <label for="profile_lname" class="form-label">Last Name</label>
+                            <input required maxlength="45" type="text" id="profile_lname" name="lname" autocomplete="family-name" class="form-control"
                                 value="<?= htmlspecialchars($user['lname']) ?>">
                         </div>
                     </div>
                     <div class="mb-4">
-                        <label class="form-label">Email</label>
-                        <input required maxlength="100" type="email" name="email" class="form-control"
+                        <label for="profile_email" class="form-label">Email</label>
+                        <input required maxlength="100" type="email" id="profile_email" name="email" autocomplete="email" class="form-control"
                             value="<?= htmlspecialchars($user['email']) ?>">
                     </div>
                     <button type="submit" class="btn btn-accent" style="padding: 12px 28px;">
@@ -98,9 +98,9 @@ $conn->close();
                     <input type="hidden" name="action" value="password">
                     
                     <div class="mb-3">
-                        <label class="form-label">Current Password</label>
+                        <label for="current_pwd" class="form-label">Current Password</label>
                         <div class="pwd-input-wrap">
-                            <input required type="password" id="current_pwd" name="current_pwd" class="form-control" placeholder="Enter current password">
+                            <input required type="password" id="current_pwd" name="current_pwd" autocomplete="current-password" class="form-control" placeholder="Enter current password">
                             <button type="button" class="pwd-toggle" onclick="togglePwd('current_pwd', this)" aria-label="Show password">
                                 <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:block;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                 <svg class="eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -108,9 +108,9 @@ $conn->close();
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">New Password</label>
+                        <label for="new_pwd" class="form-label">New Password</label>
                         <div class="pwd-input-wrap">
-                            <input required type="password" id="new_pwd" name="new_pwd" class="form-control" placeholder="Enter new password">
+                            <input required type="password" id="new_pwd" name="new_pwd" autocomplete="new-password" class="form-control" placeholder="Enter new password">
                             <button type="button" class="pwd-toggle" onclick="togglePwd('new_pwd', this)" aria-label="Show password">
                                 <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:block;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                 <svg class="eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -124,9 +124,9 @@ $conn->close();
                         </div>
                     </div>
                     <div class="mb-4">
-                        <label class="form-label">Confirm New Password</label>
+                        <label for="new_pwd_confirm" class="form-label">Confirm New Password</label>
                         <div class="pwd-input-wrap">
-                            <input required type="password" id="new_pwd_confirm" name="new_pwd_confirm" class="form-control" placeholder="Confirm new password">
+                            <input required type="password" id="new_pwd_confirm" name="new_pwd_confirm" autocomplete="new-password" class="form-control" placeholder="Confirm new password">
                             <button type="button" class="pwd-toggle" onclick="togglePwd('new_pwd_confirm', this)" aria-label="Show password">
                                 <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:block;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                 <svg class="eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -159,7 +159,7 @@ $conn->close();
                     </p>
                     <div class="mb-3">
                         <div class="pwd-input-wrap">
-                            <input required type="password" id="delete_pwd" name="delete_pwd" class="form-control" placeholder="Enter your password">
+                            <input required type="password" id="delete_pwd" name="delete_pwd" autocomplete="current-password" aria-label="Password to confirm account deletion" class="form-control" placeholder="Enter your password">
                             <button type="button" class="pwd-toggle" onclick="togglePwd('delete_pwd', this)" aria-label="Show password">
                                 <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:block;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                 <svg class="eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>

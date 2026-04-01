@@ -41,8 +41,8 @@ if ($user) {
     // Send email
     $mailContent = buildPasswordResetMail($user['fname'], $resetLink);
     pulseSendMail(
-        MAIL_FROM_ADDRESS,
-        MAIL_FROM_NAME,
+        $email,
+        $user['fname'],
         $mailContent['subject'],
         $mailContent['html'],
         $mailContent['text']

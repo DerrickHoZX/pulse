@@ -50,13 +50,13 @@ unset($_SESSION['contact_success'], $_SESSION['contact_errors'], $_SESSION['cont
                                 <div class="col-md-6">
                                     <label for="name" class="form-label">Full Name <span class="required-star">*</span></label>
                                     <input required maxlength="100" type="text" id="name" name="name"
-                                        class="form-control" placeholder="Your full name"
+                                        autocomplete="name" class="form-control" placeholder="Your full name"
                                         value="<?= htmlspecialchars($old['name'] ?? '') ?>">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="phone" class="form-label">Phone Number <span style="color:var(--pulse-muted); font-size:0.75rem; letter-spacing:0.05em; text-transform:none;">(Optional)</span></label>
                                     <input maxlength="20" type="tel" id="phone" name="phone"
-                                        class="form-control" placeholder="+65 1234 5678"
+                                        autocomplete="tel" class="form-control" placeholder="+65 1234 5678"
                                         value="<?= htmlspecialchars($old['phone'] ?? '') ?>">
                                 </div>
                             </div>
@@ -64,7 +64,7 @@ unset($_SESSION['contact_success'], $_SESSION['contact_errors'], $_SESSION['cont
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email Address <span class="required-star">*</span></label>
                                 <input required maxlength="100" type="email" id="email" name="email"
-                                    class="form-control" placeholder="you@example.com"
+                                    autocomplete="email" class="form-control" placeholder="you@example.com"
                                     value="<?= htmlspecialchars($old['email'] ?? '') ?>">
                             </div>
 

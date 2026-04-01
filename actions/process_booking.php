@@ -3,6 +3,7 @@ session_start();
 header('Content-Type: application/json');
 require_once '../inc/db.inc.php';
 require_once '../inc/mail.inc.php';
+require_once '../inc/generate_ticket.php';
 
 if (!isset($_SESSION['user_id'])) {
     echo json_encode(['success' => false, 'message' => 'Not logged in.']);
@@ -234,23 +235,36 @@ try {
 
     $mailResult = ['success' => false, 'message' => 'Mail skipped.'];
     if ($mailEvent && $mailUser && !empty($mailUser['email'])) {
-        $mailPayload = [
-            'booking_ref' => $booking_ref,
-            'event_title' => $mailEvent['title'],
-            'venue_name' => $mailEvent['venue_name'],
-            'event_date' => date('d M Y', strtotime($mailEvent['event_date'])),
-            'event_time' => date('g:i A', strtotime($mailEvent['event_time'])),
+        $mailUserName = trim(($mailUser['fname'] ?? '') . ' ' . ($mailUser['lname'] ?? ''));
+        $mailPayload  = [
+            'booking_ref'   => $booking_ref,
+            'event_title'   => $mailEvent['title'],
+            'venue_name'    => $mailEvent['venue_name'],
+            'event_date'    => date('d M Y', strtotime($mailEvent['event_date'])),
+            'event_time'    => date('g:i A', strtotime($mailEvent['event_time'])),
             'payment_label' => $payment === 'paynow' ? 'PayNow' : 'Pay in Person',
-            'total' => $total,
-            'seats' => $seatLabels,
+            'total'         => $total,
+            'seats'         => $seatLabels,
+            'qr_token'      => $qr_token,
         ];
         $mailContent = buildBookingConfirmationMail($mailPayload);
+
+        $ticketPdf   = '';
+        $pdfFilename = $booking_ref . '.pdf';
+        try {
+            $ticketPdf = generateTicketPDF($mailPayload, $mailUserName);
+        } catch (Throwable $e) {
+            error_log('[PULSE] Ticket PDF generation failed: ' . $e->getMessage());
+        }
+
         $mailResult = pulseSendMail(
             $mailUser['email'],
-            trim(($mailUser['fname'] ?? '') . ' ' . ($mailUser['lname'] ?? '')),
+            $mailUserName,
             $mailContent['subject'],
             $mailContent['html'],
-            $mailContent['text']
+            $mailContent['text'],
+            $ticketPdf,
+            $pdfFilename
         );
     }
 

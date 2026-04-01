@@ -43,26 +43,26 @@
                         <div class="col-6">
                             <label for="fname" class="form-label">First Name</label>
                             <input required maxlength="45" type="text" id="fname" name="fname"
-                                class="form-control" placeholder="First name">
+                                autocomplete="given-name" class="form-control" placeholder="First name">
                         </div>
                         <div class="col-6">
                             <label for="lname" class="form-label">Last Name</label>
                             <input required maxlength="45" type="text" id="lname" name="lname"
-                                class="form-control" placeholder="Last name">
+                                autocomplete="family-name" class="form-control" placeholder="Last name">
                         </div>
                     </div>
 
                     <div class="mb-3 mt-3">
                         <label for="email" class="form-label">Email</label>
                         <input required maxlength="100" type="email" id="email" name="email"
-                            class="form-control" placeholder="you@example.com">
+                            autocomplete="email" class="form-control" placeholder="you@example.com">
                     </div>
 
                     <div class="mb-2">
                         <label for="pwd" class="form-label">Password</label>
                         <div class="pwd-input-wrap">
                             <input required type="password" id="pwd" name="pwd"
-                                class="form-control" placeholder="Create a password">
+                                autocomplete="new-password" class="form-control" placeholder="Create a password">
                             <button type="button" class="pwd-toggle" onclick="togglePwd('pwd', this)" aria-label="Show password">
                                 <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:block;">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -87,7 +87,7 @@
                         <label for="pwd_confirm" class="form-label">Confirm Password</label>
                         <div class="pwd-input-wrap">
                             <input required type="password" id="pwd_confirm" name="pwd_confirm"
-                                class="form-control" placeholder="Confirm your password">
+                                autocomplete="new-password" class="form-control" placeholder="Confirm your password">
                             <button type="button" class="pwd-toggle" onclick="togglePwd('pwd_confirm', this)" aria-label="Show password">
                                 <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:block;">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>

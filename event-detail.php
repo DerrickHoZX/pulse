@@ -320,7 +320,7 @@ function cleanLabel(string $label): string
     </div>
 
     <div class="container-fluid px-5">
-        <nav style="padding:14px 0 0;">
+        <nav aria-label="breadcrumb" style="padding:14px 0 0;">
             <ol class="breadcrumb mb-0" style="background:none;padding:0;font-size:0.78rem;">
                 <li class="breadcrumb-item"><a href="index.php"
                         style="color:var(--pulse-muted);text-decoration:none;">Home</a></li>
@@ -478,7 +478,7 @@ function cleanLabel(string $label): string
                                 <a href="event-detail.php?event_id=<?= $r['event_id'] ?>" class="eb-card"
                                     style="text-decoration:none;display:flex;flex-direction:column;">
                                     <div class="eb-card-img" style="height:150px;">
-                                        <img src="<?= htmlspecialchars(resolveImageSrc($r['banner_img'] ?? '')) ?>" alt=""
+                                        <img src="<?= htmlspecialchars(resolveImageSrc($r['banner_img'] ?? '')) ?>" alt="<?= htmlspecialchars($r['title']) ?>"
                                             loading="lazy">
                                         <div class="eb-card-cat"><?= htmlspecialchars($r['category'] ?? '') ?></div>
                                     </div>
@@ -583,7 +583,7 @@ function cleanLabel(string $label): string
                         </div>
                         <div class="seatmap-modal-sub">For reference only. Layout may vary by event.</div>
                     </div>
-                    <button class="seatmap-modal-close" onclick="closeSeatMap()">X</button>
+                    <button class="seatmap-modal-close" onclick="closeSeatMap()" aria-label="Close seating plan">X</button>
                 </div>
                 <div class="seatmap-modal-body">
                     <img src="<?= htmlspecialchars(resolveImageSrc($images['seatmap'])) ?>"
