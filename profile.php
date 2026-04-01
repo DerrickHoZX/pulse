@@ -60,12 +60,13 @@ $conn->close();
             ?></div>
             <?php endif; ?>
 
-            <!-- ── Personal Details ── -->
             <div class="auth-card mb-4" style="max-width:100%;">
                 <h2 style="font-family: var(--font-display); font-size: 1.3rem; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 24px;">Personal Details</h2>
 
                 <form action="actions/process_profile.php" method="post">
+                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                     <input type="hidden" name="action" value="details">
+                    
                     <div class="row g-3 mb-3">
                         <div class="col-6">
                             <label class="form-label">First Name</label>
@@ -89,12 +90,13 @@ $conn->close();
                 </form>
             </div>
 
-            <!-- ── Change Password ── -->
             <div class="auth-card mb-4" style="max-width:100%;">
                 <h2 style="font-family: var(--font-display); font-size: 1.3rem; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 24px;">Change Password</h2>
 
                 <form action="actions/process_profile.php" method="post">
+                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                     <input type="hidden" name="action" value="password">
+                    
                     <div class="mb-3">
                         <label class="form-label">Current Password</label>
                         <div class="pwd-input-wrap">
@@ -138,7 +140,6 @@ $conn->close();
                 </form>
             </div>
 
-            <!-- ── Delete Account ── -->
             <div class="auth-card" style="max-width:100%; border-color: rgba(226,75,74,0.3);">
                 <h2 style="font-family: var(--font-display); font-size: 1.3rem; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; color: #e24b4a;">Delete Account</h2>
                 <p style="color: var(--pulse-muted); font-size: 0.84rem; font-weight: 300; margin-bottom: 24px;">
@@ -151,6 +152,8 @@ $conn->close();
                 </button>
 
                 <form id="delete-form" action="actions/process_delete_account.php" method="post" style="display:none; margin-top: 20px;">
+                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                    
                     <p style="color: #e24b4a; font-size: 0.82rem; margin-bottom: 16px;">
                         Enter your password to confirm deletion:
                     </p>

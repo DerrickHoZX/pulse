@@ -2,7 +2,18 @@
 include "../inc/admin_check.inc.php";
 require_once "../inc/db.inc.php";
 
-$event_id = intval($_GET['event_id'] ?? 0);
+// 1. SECURE: Enforce POST method only
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    die("Invalid request method. Deletions must be performed via POST.");
+}
+
+// 2. SECURE: Validate CSRF Token
+if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+    die("Security token validation failed. Unauthorized request.");
+}
+
+// 3. Get event ID from POST (instead of GET)
+$event_id = intval($_POST['event_id'] ?? 0);
 if (!$event_id) {
     header("Location: manage_events.php");
     exit;

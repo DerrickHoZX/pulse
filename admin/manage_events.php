@@ -83,9 +83,16 @@ $conn->close();
                                     <td>
                                         <div class="d-flex gap-2">
                                             <a href="edit_event.php?event_id=<?= $event['event_id'] ?>" class="btn btn-sm btn-outline-warning">Edit</a>
-                                            <a href="delete_event.php?event_id=<?= $event['event_id'] ?>" 
-                                                class="btn btn-sm btn-outline-danger"
-                                                onclick="return confirm('Are you sure you want to permanently delete this event?')">Delete</a>
+                                            
+                                            <form method="POST" action="delete_event.php" style="display:inline;">
+                                                <input type="hidden" name="event_id" value="<?= $event['event_id'] ?>">
+                                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                                        onclick="return confirm('Are you sure you want to permanently delete this event?')">
+                                                    Delete
+                                                </button>
+                                            </form>
+
                                         </div>
                                     </td>
                                 </tr>

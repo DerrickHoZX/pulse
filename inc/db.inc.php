@@ -1,7 +1,10 @@
 <?php
+// Securely parse the hidden configuration file
+$config = parse_ini_file('/var/www/config.ini');
+
 define('DB_HOST', 'localhost');
 define('DB_USER', 'dev');
-define('DB_PASS', 'Helloworld0996.');
+define('DB_PASS', $config['db_pass']);
 define('DB_NAME', 'project');
 
 function getDBConnection() {

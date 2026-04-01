@@ -1,4 +1,17 @@
-<?php if (session_status() === PHP_SESSION_NONE) session_start(); ?>
+<?php 
+// 1. Session Cookie Lockdown (Security Patch)
+ini_set('session.cookie_httponly', 1);
+// ini_set('session.cookie_secure', 1); // Uncomment this line AFTER you install your SSL/HTTPS certificate!
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+} 
+
+// 2. Generate Global CSRF Token (Security Patch)
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+?>
 
 <?php
 $currentPage = basename($_SERVER['PHP_SELF']);
