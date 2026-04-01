@@ -38,14 +38,14 @@
                     <div class="mb-4">
                         <label for="email" class="form-label">Email</label>
                         <input required maxlength="100" type="email" id="email" name="email"
-                            class="form-control" placeholder="you@example.com"
+                            autocomplete="email" class="form-control" placeholder="you@example.com"
                             value="<?= htmlspecialchars($_GET['email'] ?? '') ?>">
                     </div>
                     <div class="mb-4">
                         <label for="pwd" class="form-label">Password</label>
                         <div class="pwd-input-wrap">
                             <input required type="password" id="pwd" name="pwd"
-                                class="form-control" placeholder="Enter your password">
+                                autocomplete="current-password" class="form-control" placeholder="Enter your password">
                             <button type="button" class="pwd-toggle" onclick="togglePwd('pwd', this)" aria-label="Show password">
                                 <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:block;">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>

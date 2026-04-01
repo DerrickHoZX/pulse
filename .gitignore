@@ -1,0 +1,19 @@
+# Stripe credentials — never commit real keys
+inc/stripe_config.php
+
+# Composer vendor directory
+vendor/
+
+# Composer lock (optional: remove this line if you want to commit lock file)
+# composer.lock
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Claude memory
+.claude/
