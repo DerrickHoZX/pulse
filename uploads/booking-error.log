@@ -1,0 +1,2 @@
+[2026-03-28 13:58:35] Booking failed on the server. | mysqli_sql_exception: Data truncated for column 'payment' at row 1
+[2026-03-28 14:01:29] Booking failed on the server. | mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '?' at line 1

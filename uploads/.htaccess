@@ -1,0 +1,7 @@
+# 1. Disable directory listing (Hides the "Index of" page)
+Options -Indexes
+
+# 2. Specifically block access to any log files
+<Files "*.log">
+    Require all denied
+</Files>
