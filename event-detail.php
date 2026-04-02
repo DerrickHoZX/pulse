@@ -397,12 +397,10 @@ function cleanLabel(string $label): string
                                 <span id="heartText"><?= $isSaved ? 'Saved' : 'Save' ?></span>
                             </button>
 
-                            <?php if ($images['seatmap']): ?>
-                                <button onclick="openSeatMap()" class="btn btn-outline-accent"
-                                    style="display:inline-flex;align-items:center;gap:8px;padding:12px 18px;">
-                                    View Seat Map
-                                </button>
-                            <?php endif; ?>
+                            <button onclick="openSeatMap()" class="btn btn-outline-accent"
+                                style="display:inline-flex;align-items:center;gap:8px;padding:12px 18px;">
+                                View Seat Map
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -563,43 +561,49 @@ function cleanLabel(string $label): string
         </div>
     </div>
 
-    <?php if ($images['seatmap']): ?>
-        <div class="seatmap-modal-overlay" id="seatMapModal" onclick="if(event.target===this)closeSeatMap();">
-            <div class="seatmap-modal">
-                <div class="seatmap-modal-header">
-                    <div>
-                        <div class="seatmap-modal-title"><?= htmlspecialchars($event['venue_name']) ?> &mdash; Seating Plan</div>
-                        <div class="seatmap-modal-sub">For reference only. Layout may vary by event.</div>
-                    </div>
-                    <button class="seatmap-modal-close" onclick="closeSeatMap()" aria-label="Close seating plan">X</button>
+    <div class="seatmap-modal-overlay" id="seatMapModal" onclick="if(event.target===this)closeSeatMap();">
+        <div class="seatmap-modal">
+            <div class="seatmap-modal-header">
+                <div>
+                    <div class="seatmap-modal-title"><?= htmlspecialchars($event['venue_name']) ?> &mdash; Seating Plan</div>
+                    <div class="seatmap-modal-sub">For reference only. Layout may vary by event.</div>
                 </div>
-                <div class="seatmap-modal-body">
+                <button class="seatmap-modal-close" onclick="closeSeatMap()" aria-label="Close seating plan">X</button>
+            </div>
+            <div class="seatmap-modal-body">
+                <?php if ($images['seatmap']): ?>
                     <img src="<?= htmlspecialchars(resolveImageSrc($images['seatmap'])) ?>"
                         alt="<?= htmlspecialchars($event['venue_name']) ?> seating plan"
-                        style="width:100%;height:auto;display:block;">
-                </div>
-                <div style="padding:10px 20px;font-size:0.7rem;color:var(--pulse-muted);border-top:1px solid var(--pulse-border);">
-                    Colour indicates price category &middot; Seat plan is not drawn to scale &middot; Layout subject to change
-                </div>
+                        style="width:100%;height:auto;display:block;"
+                        onerror="this.style.display='none';document.getElementById('seatmapUnavailable').style.display='flex';">
+                    <div id="seatmapUnavailable" style="display:none;align-items:center;justify-content:center;padding:48px 24px;color:var(--pulse-muted);font-size:0.85rem;">Seating map not available.</div>
+                <?php else: ?>
+                    <div style="display:flex;align-items:center;justify-content:center;padding:48px 24px;color:var(--pulse-muted);font-size:0.85rem;">Seating map not available.</div>
+                <?php endif; ?>
             </div>
+            <?php if ($images['seatmap']): ?>
+            <div style="padding:10px 20px;font-size:0.7rem;color:var(--pulse-muted);border-top:1px solid var(--pulse-border);">
+                Colour indicates price category &middot; Seat plan is not drawn to scale &middot; Layout subject to change
+            </div>
+            <?php endif; ?>
         </div>
-        <style>
-            .seatmap-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
-            .seatmap-modal-overlay.open { opacity: 1; pointer-events: all; }
-            .seatmap-modal { background: var(--pulse-surface); border: 1px solid var(--pulse-border); width: 100%; max-width: 820px; max-height: 90vh; display: flex; flex-direction: column; transform: translateY(16px); transition: transform 0.25s; }
-            .seatmap-modal-overlay.open .seatmap-modal { transform: translateY(0); }
-            .seatmap-modal-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid var(--pulse-border); flex-shrink: 0; }
-            .seatmap-modal-title { font-size: 0.92rem; font-weight: 600; color: var(--pulse-white); margin-bottom: 3px; }
-            .seatmap-modal-sub { font-size: 0.7rem; color: var(--pulse-muted); }
-            .seatmap-modal-close { background: none; border: none; color: var(--pulse-muted); cursor: pointer; font-size: 1.1rem; padding: 2px; }
-            .seatmap-modal-body { overflow-y: auto; flex: 1; background: #111; }
-        </style>
-        <script>
-            function openSeatMap() { document.getElementById('seatMapModal').classList.add('open'); document.body.style.overflow = 'hidden'; }
-            function closeSeatMap() { document.getElementById('seatMapModal').classList.remove('open'); document.body.style.overflow = ''; }
-            document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSeatMap(); });
-        </script>
-    <?php endif; ?>
+    </div>
+    <style>
+        .seatmap-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+        .seatmap-modal-overlay.open { opacity: 1; pointer-events: all; }
+        .seatmap-modal { background: var(--pulse-surface); border: 1px solid var(--pulse-border); width: 100%; max-width: 820px; max-height: 90vh; display: flex; flex-direction: column; transform: translateY(16px); transition: transform 0.25s; }
+        .seatmap-modal-overlay.open .seatmap-modal { transform: translateY(0); }
+        .seatmap-modal-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid var(--pulse-border); flex-shrink: 0; }
+        .seatmap-modal-title { font-size: 0.92rem; font-weight: 600; color: var(--pulse-white); margin-bottom: 3px; }
+        .seatmap-modal-sub { font-size: 0.7rem; color: var(--pulse-muted); }
+        .seatmap-modal-close { background: none; border: none; color: var(--pulse-muted); cursor: pointer; font-size: 1.1rem; padding: 2px; }
+        .seatmap-modal-body { overflow-y: auto; flex: 1; background: #111; }
+    </style>
+    <script>
+        function openSeatMap() { document.getElementById('seatMapModal').classList.add('open'); document.body.style.overflow = 'hidden'; }
+        function closeSeatMap() { document.getElementById('seatMapModal').classList.remove('open'); document.body.style.overflow = ''; }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSeatMap(); });
+    </script>
 
     <div id="toast"
         style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--pulse-surface);border:1px solid var(--pulse-border);padding:10px 22px;font-size:0.8rem;color:var(--pulse-white);opacity:0;transition:all 0.3s;z-index:9999;pointer-events:none;">
