@@ -59,6 +59,7 @@ $dateStr = date('d M Y', strtotime($event['event_date']));
 $timeStr = date('g:i A', strtotime($event['event_time']));
 $minPrice = $sections ? min(array_column($sections, 'price')) : null;
 $totalAvail = array_sum(array_column($sections, 'avail_count'));
+$isPast = strtotime($event['event_date']) < strtotime('today');
 
 function cleanLabel(string $label): string
 {
@@ -368,7 +369,10 @@ function cleanLabel(string $label): string
                         </div>
 
                         <div class="d-flex gap-3 flex-wrap">
-                            <?php if ($totalAvail > 0): ?>
+                            <?php if ($isPast): ?>
+                                <button class="btn btn-accent" disabled
+                                    style="opacity:0.4;display:inline-flex;align-items:center;gap:8px;padding:12px 26px;">Past Event</button>
+                            <?php elseif ($totalAvail > 0): ?>
                                 <a href="booking.php?event_id=<?= $event_id ?>" class="btn btn-accent"
                                     style="display:inline-flex;align-items:center;gap:8px;padding:12px 26px;">
                                     Get Tickets
@@ -381,10 +385,6 @@ function cleanLabel(string $label): string
                             <button onclick="toggleHeart(<?= $event_id ?>)" id="heartBtn" class="btn btn-outline-accent"
                                 style="display:inline-flex;align-items:center;gap:8px;padding:12px 18px;">
                                 <span id="heartText">Save</span>
-                            </button>
-                            <button onclick="copyLink()" class="btn btn-outline-accent"
-                                style="display:inline-flex;align-items:center;gap:8px;padding:12px 18px;">
-                                Share
                             </button>
                             <?php if ($images['seatmap']): ?>
                                 <button onclick="openSeatMap()" class="btn btn-outline-accent"
@@ -538,7 +538,9 @@ function cleanLabel(string $label): string
                         </div>
                     <?php endforeach; ?>
 
-                    <?php if ($totalAvail > 0): ?>
+                    <?php if ($isPast): ?>
+                        <div class="btn-get-tickets disabled">Past Event</div>
+                    <?php elseif ($totalAvail > 0): ?>
                         <a href="booking.php?event_id=<?= $event_id ?>" class="btn-get-tickets">Get Tickets Now</a>
                     <?php else: ?>
                         <div class="btn-get-tickets disabled">Sold Out</div>
@@ -550,26 +552,6 @@ function cleanLabel(string $label): string
                     </div>
                 </div>
 
-                <div
-                    style="background:var(--pulse-surface);border:1px solid var(--pulse-border);padding:14px 18px;margin-top:10px;">
-                    <div
-                        style="font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--pulse-muted);margin-bottom:10px;">
-                        Share This Event</div>
-                    <div style="display:flex;gap:8px;">
-                        <button onclick="copyLink()"
-                            style="flex:1;background:transparent;border:1px solid var(--pulse-border);color:var(--pulse-muted);padding:8px;font-size:0.75rem;cursor:pointer;transition:all 0.2s;"
-                            onmouseover="this.style.borderColor='var(--pulse-accent)';this.style.color='var(--pulse-white)';"
-                            onmouseout="this.style.borderColor='var(--pulse-border)';this.style.color='var(--pulse-muted)';">
-                            Copy Link
-                        </button>
-                        <button onclick="toggleHeart(<?= $event_id ?>)" id="heartBtn2"
-                            style="flex:1;background:transparent;border:1px solid var(--pulse-border);color:var(--pulse-muted);padding:8px;font-size:0.75rem;cursor:pointer;transition:all 0.2s;"
-                            onmouseover="this.style.borderColor='rgba(217,82,122,0.5)';this.style.color='#D9527A';"
-                            onmouseout="this.style.borderColor='var(--pulse-border)';this.style.color='var(--pulse-muted)';">
-                            <span id="heartText2">Save</span>
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

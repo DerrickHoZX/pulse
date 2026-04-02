@@ -49,7 +49,7 @@ $upd->close();
 
 // ── Fetch booking + event details ─────────────────────────────────────────────
 $bookingStmt = $conn->prepare(
-    "SELECT b.total, b.qr_token, e.title, e.event_date, e.event_time, v.name AS venue_name
+    "SELECT b.total, e.title, e.event_date, e.event_time, v.name AS venue_name
      FROM bookings b
      JOIN events e ON b.event_id = e.event_id
      JOIN venues v ON e.venue_id = v.venue_id
@@ -93,7 +93,6 @@ if ($justConfirmed && $booking) {
             'payment_label' => 'Credit / Debit Card (Stripe)',
             'total'         => floatval($booking['total']),
             'seats'         => $seatLabels,
-            'qr_token'      => $booking['qr_token'] ?? '',
         ];
         $mailContent = buildBookingConfirmationMail($mailPayload);
 
@@ -149,7 +148,11 @@ $bookingRef = 'PULSE-' . date('Y') . '-' . str_pad($bookingId, 5, '0', STR_PAD_L
 
                 <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
                     <a href="events.php" class="btn btn-accent" style="display:inline-flex;align-items:center;gap:8px;">Browse More Events</a>
-                    <a href="dashboard.php" class="btn btn-outline-accent" style="display:inline-flex;align-items:center;gap:8px;">My Bookings</a>
+                    <a href="my_bookings.php" class="btn btn-outline-accent" style="display:inline-flex;align-items:center;gap:8px;">My Bookings</a>
+                    <a href="actions/download_ticket.php?booking_id=<?= $bookingId ?>" class="btn btn-outline-accent" style="display:inline-flex;align-items:center;gap:8px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Download Ticket
+                    </a>
                 </div>
             </div>
         </div>

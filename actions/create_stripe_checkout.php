@@ -87,6 +87,18 @@ if ($totalQty < 1 || $totalQty > 8) {
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 $conn = getDBConnection();
+
+$eventCheck = $conn->prepare("SELECT event_date FROM events WHERE event_id = ? AND is_active = 1");
+$eventCheck->bind_param('i', $event_id);
+$eventCheck->execute();
+$eventRow = $eventCheck->get_result()->fetch_assoc();
+$eventCheck->close();
+if (!$eventRow || strtotime($eventRow['event_date']) < strtotime('today')) {
+    $conn->close();
+    echo json_encode(['success' => false, 'message' => 'Tickets are no longer available for this event.']);
+    exit;
+}
+
 $conn->begin_transaction();
 
 try {
@@ -140,13 +152,12 @@ try {
     }
 
     // ── Create pending booking ────────────────────────────────────────────────
-    $qr_token = bin2hex(random_bytes(16));
     $dbPayment = resolvePaymentValue($conn, 'card');
     $ins = $conn->prepare(
-        "INSERT INTO bookings (user_id, event_id, status, payment, total, qr_token)
-         VALUES (?, ?, 'pending', ?, ?, ?)"
+        "INSERT INTO bookings (user_id, event_id, status, payment, total)
+         VALUES (?, ?, 'pending', ?, ?)"
     );
-    $ins->bind_param('iisds', $user_id, $event_id, $dbPayment, $total, $qr_token);
+    $ins->bind_param('iisd', $user_id, $event_id, $dbPayment, $total);
     $ins->execute();
     $booking_id = $conn->insert_id;
     $ins->close();

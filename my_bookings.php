@@ -1,11 +1,12 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php?redirect=dashboard.php');
+    header('Location: login.php?redirect=my_bookings.php');
     exit;
 }
 
 require_once 'inc/db.inc.php';
+require_once 'inc/image.inc.php';
 $conn = getDBConnection();
 
 function paymentLabel(string $payment): string {
@@ -29,7 +30,10 @@ $u_stmt->close();
 $b_stmt = $conn->prepare(
     "SELECT b.booking_id, b.status, b.payment, b.total, b.created_at,
             b.stripe_session_id,
-            e.title, e.event_date, e.event_time, e.img_url, e.category,
+            e.title, e.event_date, e.event_time, e.category,
+            (SELECT ei.image_path FROM event_images ei
+             WHERE ei.event_id = e.event_id AND ei.image_type = 'poster'
+             ORDER BY ei.sort_order ASC, ei.image_id ASC LIMIT 1) AS img_url,
             v.name AS venue_name,
             COUNT(bs.id) AS ticket_count
      FROM bookings b
@@ -83,7 +87,7 @@ $upcoming = array_filter($bookings, function ($b) {
     .stat-value { font-size: 1.6rem; font-weight: 700; color: var(--pulse-white); }
     .stat-sub { font-size: 0.72rem; color: var(--pulse-muted); margin-top: 4px; }
     .section-divider {
-        font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase;
+        font-size: 1rem; letter-spacing: 0.16em; text-transform: uppercase;
         color: var(--pulse-muted); margin-bottom: 16px; padding-bottom: 12px;
         border-bottom: 1px solid var(--pulse-border);
     }
@@ -119,8 +123,8 @@ $upcoming = array_filter($bookings, function ($b) {
         .booking-right { display: none; }
     }
     .booking-status {
-        font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
-        padding: 4px 10px; border-radius: 2px; font-weight: 600;
+        font-size: 0.55rem; letter-spacing: 0.08em; text-transform: uppercase;
+        padding: 2px 7px; border-radius: 2px; font-weight: 600;
     }
     .status-confirmed { background: rgba(15,110,86,0.15); color: #4cd964; border: 1px solid rgba(15,110,86,0.3); }
     .status-pending { background: rgba(217,119,6,0.15); color: #f5a623; border: 1px solid rgba(217,119,6,0.3); }
@@ -151,12 +155,6 @@ $upcoming = array_filter($bookings, function ($b) {
     <main class="dash-wrap">
         <div class="dash-header">
             <div class="container-fluid px-5">
-                <nav aria-label="breadcrumb" style="margin-bottom:10px;">
-                    <ol class="breadcrumb mb-0" style="background:none;padding:0;font-size:0.78rem;">
-                        <li class="breadcrumb-item"><a href="index.php" style="color:var(--pulse-muted);text-decoration:none;">Home</a></li>
-                        <li class="breadcrumb-item active" style="color:var(--pulse-muted);">My Bookings</li>
-                    </ol>
-                </nav>
                 <h1>My Bookings</h1>
                 <p>Welcome back, <strong style="color:var(--pulse-white);"><?= htmlspecialchars(trim(($user['fname'] ?? '') . ' ' . ($user['lname'] ?? ''))) ?></strong> &middot; <?= htmlspecialchars($user['email'] ?? '') ?></p>
             </div>
@@ -167,6 +165,8 @@ $upcoming = array_filter($bookings, function ($b) {
             <div class="dash-alert <?= $_GET['error'] === 'session_expired' ? 'dash-alert-error' : 'dash-alert-warning' ?>">
                 <?php if ($_GET['error'] === 'session_expired'): ?>
                     Your Stripe checkout session has expired. Please book again.
+                <?php elseif ($_GET['error'] === 'ticket_unavailable'): ?>
+                    Ticket download is temporarily unavailable on the server. Please try again later or contact support.
                 <?php else: ?>
                     Could not resume payment. Please try booking again or contact support.
                 <?php endif; ?>
@@ -208,7 +208,7 @@ $upcoming = array_filter($bookings, function ($b) {
                     $ref = 'PULSE-' . date('Y', strtotime($b['created_at'])) . '-' . str_pad($b['booking_id'], 5, '0', STR_PAD_LEFT);
                 ?>
                 <div class="booking-card">
-                    <div class="booking-img"><img src="<?= htmlspecialchars($b['img_url']) ?>" alt="<?= htmlspecialchars($b['title']) ?> event poster"></div>
+                    <div class="booking-img"><img src="<?= htmlspecialchars(resolveImageSrc($b['img_url'] ?? '')) ?>" alt="<?= htmlspecialchars($b['title']) ?> event poster"></div>
                     <div class="booking-info">
                         <div class="booking-event-cat"><?= htmlspecialchars($b['category']) ?></div>
                         <div class="booking-event-title"><?= htmlspecialchars($b['title']) ?></div>
@@ -227,6 +227,9 @@ $upcoming = array_filter($bookings, function ($b) {
                             <?php if ($b['status'] === 'pending' && !empty($b['stripe_session_id'])): ?>
                             <a href="actions/resume_payment.php?booking_id=<?= intval($b['booking_id']) ?>" class="resume-btn">Complete Payment</a>
                             <?php endif; ?>
+                            <?php if ($b['status'] === 'confirmed'): ?>
+                            <a href="actions/download_ticket.php?booking_id=<?= intval($b['booking_id']) ?>" class="resume-btn" style="background:rgba(82,71,184,0.15);color:#9d96ff;border-color:rgba(82,71,184,0.4);">&#8595; Download Ticket</a>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -243,7 +246,7 @@ $upcoming = array_filter($bookings, function ($b) {
                     $isPast = strtotime($b['event_date']) < strtotime('today');
                 ?>
                 <div class="booking-card" style="<?= $isPast ? 'opacity:0.65;' : '' ?>">
-                    <div class="booking-img"><img src="<?= htmlspecialchars($b['img_url']) ?>" alt="<?= htmlspecialchars($b['title']) ?> event poster"></div>
+                    <div class="booking-img"><img src="<?= htmlspecialchars(resolveImageSrc($b['img_url'] ?? '')) ?>" alt="<?= htmlspecialchars($b['title']) ?> event poster"></div>
                     <div class="booking-info">
                         <div class="booking-event-cat"><?= htmlspecialchars($b['category']) ?></div>
                         <div class="booking-event-title"><?= htmlspecialchars($b['title']) ?></div>
@@ -263,6 +266,9 @@ $upcoming = array_filter($bookings, function ($b) {
                             <?php if ($b['status'] === 'pending' && !empty($b['stripe_session_id'])): ?>
                             <a href="actions/resume_payment.php?booking_id=<?= intval($b['booking_id']) ?>" class="resume-btn">Complete Payment</a>
                             <?php endif; ?>
+                            <?php if ($b['status'] === 'confirmed'): ?>
+                            <a href="actions/download_ticket.php?booking_id=<?= intval($b['booking_id']) ?>" class="resume-btn" style="background:rgba(82,71,184,0.15);color:#9d96ff;border-color:rgba(82,71,184,0.4);">&#8595; Download Ticket</a>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -279,5 +285,3 @@ $upcoming = array_filter($bookings, function ($b) {
     <?php include "inc/footer.inc.php" ?>
 </body>
 </html>
-
-

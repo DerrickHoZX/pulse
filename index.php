@@ -74,62 +74,32 @@ $conn->close();
                 </div>
 
                 <div class="events-grid">
-                    <div class="event-card card-large">
-                        <img class="event-card-img" src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=900&q=80" alt="BLACKPINK">
+                    <?php foreach ($featured as $i => $e):
+                        $cardClass = $i === 0 ? 'event-card card-large' : 'event-card';
+                        $imgSrc = !empty($e['img_url']) ? resolveImageSrc($e['img_url']) : '';
+                        $dateStr = date('d M Y', strtotime($e['event_date']));
+                        $arrowSvg = '<svg width="' . ($i === 0 ? '11' : '10') . '" height="' . ($i === 0 ? '11' : '10') . '" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+                    ?>
+                    <div class="<?= $cardClass ?>">
+                        <?php if ($imgSrc): ?>
+                        <img class="event-card-img" src="<?= htmlspecialchars($imgSrc) ?>" alt="<?= htmlspecialchars($e['title']) ?>">
+                        <?php endif; ?>
                         <div class="event-card-overlay">
-                            <span class="event-genre-tag">K-Pop</span>
-                            <div class="event-card-title">BLACKPINK<br>BORN PINK World Tour</div>
+                            <span class="event-genre-tag"><?= htmlspecialchars($e['category']) ?></span>
+                            <div class="event-card-title"><?= htmlspecialchars($e['title']) ?></div>
                             <div class="event-card-meta">
-                                <span>29&ndash;30 Nov 2025</span><span class="meta-dot"></span><span>National Stadium</span>
+                                <span><?= $dateStr ?></span><span class="meta-dot"></span><span><?= htmlspecialchars($e['venue_name']) ?></span>
                             </div>
-                            <a href="event-detail.php?event_id=1" class="event-cta-btn">Get Tickets <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+                            <a href="event-detail.php?event_id=<?= $e['event_id'] ?>" class="event-cta-btn">Get Tickets <?= $arrowSvg ?></a>
                         </div>
-                        <div class="hot-badge">Selling Fast</div>
+                        <?php if ($e['min_price']): ?>
+                        <div class="price-badge">From S$<?= number_format($e['min_price'], 0) ?></div>
+                        <?php endif; ?>
                     </div>
-
-                    <div class="event-card">
-                        <img class="event-card-img" src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80" alt="Lady Gaga">
-                        <div class="event-card-overlay">
-                            <span class="event-genre-tag">Pop</span>
-                            <div class="event-card-title">Lady Gaga: Chromatica Ball</div>
-                            <div class="event-card-meta"><span>22 May 2025</span><span class="meta-dot"></span><span>National Stadium</span></div>
-                            <a href="event-detail.php?event_id=3" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
-                        </div>
-                        <div class="price-badge">From S$188</div>
-                    </div>
-
-                    <div class="event-card">
-                        <img class="event-card-img" src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80" alt="TWICE">
-                        <div class="event-card-overlay">
-                            <span class="event-genre-tag">K-Pop</span>
-                            <div class="event-card-title">TWICE: Ready To Be World Tour</div>
-                            <div class="event-card-meta"><span>11&ndash;12 Oct 2025</span><span class="meta-dot"></span><span>Singapore Indoor Stadium</span></div>
-                            <a href="event-detail.php?event_id=4" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
-                        </div>
-                        <div class="hot-badge">Hot</div>
-                    </div>
-
-                    <div class="event-card">
-                        <img class="event-card-img" src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&q=80" alt="My Chemical Romance">
-                        <div class="event-card-overlay">
-                            <span class="event-genre-tag">Rock</span>
-                            <div class="event-card-title">My Chemical Romance</div>
-                            <div class="event-card-meta"><span>29 Apr 2026</span><span class="meta-dot"></span><span>Singapore Indoor Stadium</span></div>
-                            <a href="event-detail.php?event_id=2" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
-                        </div>
-                        <div class="price-badge">From S$118</div>
-                    </div>
-
-                    <div class="event-card">
-                        <img class="event-card-img" src="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=600&q=80" alt="Cirque du Soleil">
-                        <div class="event-card-overlay">
-                            <span class="event-genre-tag">Theatre</span>
-                            <div class="event-card-title">Cirque du Soleil: KOOZA</div>
-                            <div class="event-card-meta"><span>Ongoing 2026</span><span class="meta-dot"></span><span>Bayfront Event Space</span></div>
-                            <a href="event-detail.php?event_id=5" class="event-cta-btn">Get Tickets <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L7 3M10 6L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
-                        </div>
-                        <div class="price-badge">From S$108</div>
-                    </div>
+                    <?php endforeach; ?>
+                    <?php if (empty($featured)): ?>
+                    <div style="color:var(--pulse-muted);padding:40px 0;">No upcoming events at this time.</div>
+                    <?php endif; ?>
                 </div>
             </section>
 
@@ -142,46 +112,30 @@ $conn->close();
                     <a href="events.php" class="view-all-link">Full Calendar</a>
                 </div>
                 <div class="upcoming-list">
-                    <a href="event-detail.php?event_id=16" class="upcoming-item">
-                        <div class="upcoming-date-box"><span class="date-month">Mar</span><span class="date-day">31</span></div>
+                    <?php foreach ($upcoming as $e):
+                        $month = date('M', strtotime($e['event_date']));
+                        $day   = date('j', strtotime($e['event_date']));
+                        $time  = date('g:i A', strtotime($e['event_time']));
+                    ?>
+                    <a href="event-detail.php?event_id=<?= $e['event_id'] ?>" class="upcoming-item">
+                        <div class="upcoming-date-box"><span class="date-month"><?= $month ?></span><span class="date-day"><?= $day ?></span></div>
                         <div>
-                            <div class="upcoming-event-title">Laufey: A Matter of Time Tour</div>
-                            <div class="upcoming-event-details"><span>Sands Expo</span><span class="meta-dot"></span><span>8:00 PM</span><span class="tag-chip tag-hot">Hot</span></div>
+                            <div class="upcoming-event-title"><?= htmlspecialchars($e['title']) ?></div>
+                            <div class="upcoming-event-details">
+                                <span><?= htmlspecialchars($e['venue_name']) ?></span>
+                                <span class="meta-dot"></span>
+                                <span><?= $time ?></span>
+                            </div>
                         </div>
-                        <div class="upcoming-right"><div class="upcoming-price">S$98 <small>From</small></div><span class="tag-chip">Pop / Jazz</span></div>
-                    </a>
-                    <a href="event-detail.php?event_id=3" class="upcoming-item">
-                        <div class="upcoming-date-box"><span class="date-month">May</span><span class="date-day">22</span></div>
-                        <div>
-                            <div class="upcoming-event-title">Lady Gaga: Chromatica Ball Singapore</div>
-                            <div class="upcoming-event-details"><span>National Stadium</span><span class="meta-dot"></span><span>8:00 PM</span><span class="tag-chip tag-hot">Hot</span></div>
+                        <div class="upcoming-right">
+                            <div class="upcoming-price"><?= $e['min_price'] ? 'S$' . number_format($e['min_price'], 0) . ' <small>From</small>' : '' ?></div>
+                            <span class="tag-chip"><?= htmlspecialchars($e['category']) ?></span>
                         </div>
-                        <div class="upcoming-right"><div class="upcoming-price">S$188 <small>From</small></div><span class="tag-chip">Pop</span></div>
                     </a>
-                    <a href="event-detail.php?event_id=13" class="upcoming-item">
-                        <div class="upcoming-date-box"><span class="date-month">Sep</span><span class="date-day">23</span></div>
-                        <div>
-                            <div class="upcoming-event-title">Sting: My Songs Tour Singapore</div>
-                            <div class="upcoming-event-details"><span>Singapore Indoor Stadium</span><span class="meta-dot"></span><span>8:00 PM</span></div>
-                        </div>
-                        <div class="upcoming-right"><div class="upcoming-price">S$128 <small>From</small></div><span class="tag-chip">Rock</span></div>
-                    </a>
-                    <a href="event-detail.php?event_id=4" class="upcoming-item">
-                        <div class="upcoming-date-box"><span class="date-month">Oct</span><span class="date-day">11</span></div>
-                        <div>
-                            <div class="upcoming-event-title">TWICE 5TH WORLD TOUR: Ready To Be</div>
-                            <div class="upcoming-event-details"><span>Singapore Indoor Stadium</span><span class="meta-dot"></span><span>7:00 PM</span><span class="tag-chip tag-hot">Selling Fast</span></div>
-                        </div>
-                        <div class="upcoming-right"><div class="upcoming-price">S$148 <small>From</small></div><span class="tag-chip">K-Pop</span></div>
-                    </a>
-                    <a href="event-detail.php?event_id=1" class="upcoming-item">
-                        <div class="upcoming-date-box"><span class="date-month">Nov</span><span class="date-day">29</span></div>
-                        <div>
-                            <div class="upcoming-event-title">BLACKPINK: BORN PINK World Tour Singapore</div>
-                            <div class="upcoming-event-details"><span>National Stadium</span><span class="meta-dot"></span><span>7:30 PM</span><span class="tag-chip tag-hot">Hot</span></div>
-                        </div>
-                        <div class="upcoming-right"><div class="upcoming-price">S$148 <small>From</small></div><span class="tag-chip">K-Pop</span></div>
-                    </a>
+                    <?php endforeach; ?>
+                    <?php if (empty($upcoming)): ?>
+                    <div style="color:var(--pulse-muted);padding:20px 0;">No upcoming shows at this time.</div>
+                    <?php endif; ?>
                 </div>
             </section>
 

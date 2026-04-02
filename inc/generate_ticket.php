@@ -1,50 +1,25 @@
 <?php
-require_once __DIR__ . '/../vendor/autoload.php';
-
-use BaconQrCode\Common\ErrorCorrectionLevel;
-use BaconQrCode\Encoder\Encoder;
-
-/**
- * Draws a QR code onto an FPDF page using filled rectangles (no GD required).
- */
-function drawQrCode(FPDF $pdf, string $data, float $x, float $y, float $size): void
-{
-    $qrCode = Encoder::encode($data, ErrorCorrectionLevel::M(), 'UTF-8', null, false);
-    $matrix = $qrCode->getMatrix();
-    $count  = $matrix->getWidth();
-
-    $mod    = $size / ($count + 4); // include quiet zone margin of 2 modules each side
-    $ox     = $x + $mod * 2;
-    $oy     = $y + $mod * 2;
-
-    // White background
-    $pdf->SetFillColor(255, 255, 255);
-    $pdf->Rect($x, $y, $size, $size, 'F');
-
-    // Dark modules
-    $pdf->SetFillColor(0, 0, 0);
-    for ($row = 0; $row < $count; $row++) {
-        for ($col = 0; $col < $count; $col++) {
-            if ($matrix->get($col, $row) & 1) {
-                $pdf->Rect($ox + $col * $mod, $oy + $row * $mod, $mod, $mod, 'F');
-            }
-        }
-    }
-}
 
 /**
  * Generates a PDF e-ticket for a confirmed PULSE booking.
  *
  * @param array  $booking  Keys: booking_ref, event_title, venue_name, event_date,
- *                         event_time, seats (string[]), total, qr_token,
- *                         ticket_category (optional)
+ *                         event_time, seats (string[]), total, ticket_category (optional)
  * @param string $userName Full name of the ticket holder
  * @return string          Raw PDF binary (suitable for email attachment)
  */
 function generateTicketPDF(array $booking, string $userName): string
 {
-    $qrData = 'PULSE:' . ($booking['booking_ref'] ?? 'UNKNOWN') . ':' . ($booking['qr_token'] ?? '');
+    $autoloadPath = __DIR__ . '/../vendor/autoload.php';
+    if (!is_file($autoloadPath)) {
+        throw new RuntimeException('Composer autoload file is missing. Run composer install on the server.');
+    }
 
+    require_once $autoloadPath;
+
+    if (!class_exists('FPDF')) {
+        throw new RuntimeException('FPDF dependency is not available.');
+    }
     // ── PDF Canvas (A5 landscape: 210 × 148 mm) ───────────────────────────────
     $pdf = new FPDF('L', 'mm', 'A5');
     $pdf->SetMargins(0, 0, 0);
@@ -157,11 +132,18 @@ function generateTicketPDF(array $booking, string $userName): string
         $ry = $pdf->GetY() + 2;
     }
 
-    // QR Code (drawn with rectangles — no GD needed)
-    $qrSize = 44;
-    $qrX    = $lW + ($rW - $qrSize) / 2;
-    $qrY    = $H - $qrSize - 13;
-    drawQrCode($pdf, $qrData, $qrX, $qrY, $qrSize);
+    // ── "Present at entrance" notice ──────────────────────────────────────────
+    $ry += 4;
+    $pdf->SetFillColor(82, 71, 184);
+    $pdf->Rect($rx - 1, $ry, $rcw + 2, 14, 'F');
+    $pdf->SetFont('Helvetica', 'B', 7);
+    $pdf->SetTextColor(255, 255, 255);
+    $pdf->SetXY($rx, $ry + 1.5);
+    $pdf->Cell($rcw, 4, 'PRESENT THIS TICKET', 0, 2, 'C');
+    $pdf->SetFont('Helvetica', '', 6.5);
+    $pdf->SetTextColor(210, 205, 255);
+    $pdf->SetX($rx);
+    $pdf->Cell($rcw, 4, 'AT THE ENTRANCE', 0, 0, 'C');
 
     // ── Bottom Strip ──────────────────────────────────────────────────────────
     $pdf->SetFont('Helvetica', '', 7);
@@ -172,3 +154,7 @@ function generateTicketPDF(array $booking, string $userName): string
 
     return $pdf->Output('S');
 }
+
+
+
+

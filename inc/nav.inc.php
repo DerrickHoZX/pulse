@@ -20,7 +20,7 @@ $isAdminPage = (strpos($currentDir, '/admin') !== false);
 
 $homeLink      = $isAdminPage ? '../index.php' : 'index.php';
 $eventsLink    = $isAdminPage ? '../events.php' : 'events.php';
-$dashboardLink = $isAdminPage ? '../dashboard.php' : 'dashboard.php';
+$dashboardLink = $isAdminPage ? '../my_bookings.php' : 'my_bookings.php';
 $logoutLink    = $isAdminPage ? '../actions/logout.php' : 'actions/logout.php';
 $loginLink     = $isAdminPage ? '../login.php' : 'login.php';
 $adminLink     = $isAdminPage ? 'admin.php' : 'admin/admin.php';

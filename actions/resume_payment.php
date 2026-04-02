@@ -12,7 +12,7 @@ $bookingId = intval($_GET['booking_id'] ?? 0);
 $userId    = intval($_SESSION['user_id']);
 
 if (!$bookingId) {
-    header('Location: ../dashboard.php');
+    header('Location: ../my_bookings.php');
     exit;
 }
 
@@ -30,7 +30,7 @@ $stmt->close();
 $conn->close();
 
 if (!$booking || empty($booking['stripe_session_id'])) {
-    header('Location: ../dashboard.php');
+    header('Location: ../my_bookings.php');
     exit;
 }
 
@@ -41,7 +41,7 @@ $result = stripeRequest('GET', 'checkout/sessions/' . urlencode($sessionId));
 
 if ($result['code'] !== 200 || empty($result['body']['id'])) {
     // Stripe couldn't find the session — redirect back with error
-    header('Location: ../dashboard.php?error=session_not_found');
+    header('Location: ../my_bookings.php?error=session_not_found');
     exit;
 }
 
@@ -63,5 +63,5 @@ if ($sessionStatus === 'open' && $checkoutUrl) {
 }
 
 // Session expired or cancelled — nothing to resume
-header('Location: ../dashboard.php?error=session_expired');
+header('Location: ../my_bookings.php?error=session_expired');
 exit;

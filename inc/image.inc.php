@@ -49,23 +49,6 @@ function getEventImages($conn, $event_id, $type = 'gallery') {
 function getAllEventImages($conn, $event_id) {
     $result = ['banner' => '', 'poster' => '', 'seatmap' => ''];
 
-    // Fallback to events.img_url if event_images table doesn't exist
-    $check = $conn->query("SHOW TABLES LIKE 'event_images'");
-    if (!$check || $check->num_rows === 0) {
-        $stmt = $conn->prepare("SELECT img_url FROM events WHERE event_id = ?");
-        if ($stmt) {
-            $stmt->bind_param('i', $event_id);
-            $stmt->execute();
-            $row = $stmt->get_result()->fetch_assoc();
-            if ($row && !empty($row['img_url'])) {
-                $result['banner'] = $row['img_url'];
-                $result['poster'] = $row['img_url'];
-            }
-            $stmt->close();
-        }
-        return $result;
-    }
-
     $stmt = $conn->prepare(
         "SELECT image_type, image_path
          FROM event_images
@@ -81,21 +64,6 @@ function getAllEventImages($conn, $event_id) {
     foreach ($rows as $row) {
         if (isset($result[$row['image_type']]) && !$result[$row['image_type']]) {
             $result[$row['image_type']] = $row['image_path'];
-        }
-    }
-
-    // If no banner found in event_images, fall back to events.img_url
-    if (!$result['banner']) {
-        $stmt = $conn->prepare("SELECT img_url FROM events WHERE event_id = ?");
-        if ($stmt) {
-            $stmt->bind_param('i', $event_id);
-            $stmt->execute();
-            $row = $stmt->get_result()->fetch_assoc();
-            if ($row && !empty($row['img_url'])) {
-                $result['banner'] = $row['img_url'];
-                if (!$result['poster']) $result['poster'] = $row['img_url'];
-            }
-            $stmt->close();
         }
     }
 

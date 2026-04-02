@@ -34,6 +34,12 @@ if (!$event) {
     exit;
 }
 
+if (strtotime($event['event_date']) < strtotime('today')) {
+    $conn->close();
+    header('Location: event-detail.php?event_id=' . $event_id);
+    exit;
+}
+
 $sec_stmt = $conn->prepare(
     "SELECT ss.section_id, ss.label, ss.price, ss.total_seats,
             COUNT(CASE WHEN s.status = 'available' THEN 1 END) AS avail_count
@@ -172,8 +178,9 @@ function cleanLabel(string $label): string {
                                 </div>
                                 <div class="col-md-6">
                                     <label for="lastName" class="form-label" style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--pulse-muted);margin-bottom:8px;display:block;">Last Name</label>
-                                    <input type="text" class="form-control" id="lastName" placeholder="Last name" autocomplete="family-name"
-                                        style="background:var(--pulse-card);border:1px solid var(--pulse-border);border-radius:0;color:var(--pulse-white);padding:12px 16px;font-family:var(--font-body);font-size:0.88rem;width:100%;">
+                                    <input type="text" class="form-control" id="lastName" autocomplete="family-name"
+                                        style="background:var(--pulse-card);border:1px solid var(--pulse-border);border-radius:0;color:var(--pulse-white);padding:12px 16px;font-family:var(--font-body);font-size:0.88rem;width:100%;"
+                                        value="<?= htmlspecialchars($_SESSION['lname'] ?? '') ?>" readonly>
                                 </div>
                                 <div class="col-12">
                                     <label for="emailAddr" class="form-label" style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--pulse-muted);margin-bottom:8px;display:block;">Email Address</label>
@@ -286,7 +293,7 @@ function cleanLabel(string $label): string {
                     </p>
                     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
                         <a href="events.php" class="btn btn-accent" style="display:inline-flex;align-items:center;gap:8px;">Browse More Events</a>
-                        <a href="dashboard.php" class="btn btn-outline-accent" style="display:inline-flex;align-items:center;gap:8px;">My Bookings</a>
+                        <a href="my_bookings.php" class="btn btn-outline-accent" style="display:inline-flex;align-items:center;gap:8px;">My Bookings</a>
                     </div>
                 </div>
             </div>

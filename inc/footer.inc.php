@@ -39,7 +39,7 @@
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <?php if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'): ?>
                             <li><a href="<?= $base ?>profile.php">My Profile</a></li>
-                            <li><a href="<?= $base ?>dashboard.php">My Bookings</a></li>
+                            <li><a href="<?= $base ?>my_bookings.php">My Bookings</a></li>
                         <?php endif; ?>
                         <li><a href="<?= $base ?>actions/logout.php">Sign Out</a></li>
                     <?php else: ?>
