@@ -223,8 +223,7 @@ function cleanLabel(string $label): string {
                         <div class="booking-form-section">
                             <div class="booking-form-title">Payment Method</div>
                             <div class="payment-methods">
-                                <button type="button" class="payment-pill active" data-method="paynow">PayNow</button>
-                                <button type="button" class="payment-pill" data-method="inperson">Pay in Person</button>
+                                <button type="button" class="payment-pill active" data-method="inperson">Pay in Person</button>
                                 <button type="button" class="payment-pill" data-method="card">Card</button>
                             </div>
 
@@ -239,15 +238,7 @@ function cleanLabel(string $label): string {
                                 </div>
                             </div>
 
-                            <div id="paynowFields">
-                                <div style="text-align:center;padding:28px 0 20px;">
-                                    <img src="https://api.qrserver.com/v1/create-qr-code/?data=paynowsg://&size=180x180&color=5247b8&bgcolor=0d0d0d"
-                                         alt="PayNow QR" style="border-radius:8px;margin-bottom:14px;">
-                                    <p style="color:var(--pulse-muted);font-size:0.85rem;">Scan with your banking app.<br>Complete payment before confirming the booking.</p>
-                                </div>
-                            </div>
-
-                            <div id="inpersonFields" style="display:none;">
+                            <div id="inpersonFields">
                                 <div style="text-align:center;padding:32px 0;">
                                     <p style="color:var(--pulse-muted);font-size:0.88rem;">Pay at the venue box office on the event day.<br>Your booking will be held under your account.</p>
                                 </div>
@@ -302,7 +293,7 @@ function cleanLabel(string $label): string {
 
             <form id="bookingForm" action="actions/process_booking.php" method="POST" style="display:none;">
                 <input type="hidden" name="event_id" value="<?= $event_id ?>">
-                <input type="hidden" name="payment" id="paymentInput" value="paynow">
+                <input type="hidden" name="payment" id="paymentInput" value="inperson">
                 <input type="hidden" name="total" id="totalInput" value="0">
                 <input type="hidden" name="selections" id="selectionsInput" value="">
             </form>
@@ -343,7 +334,7 @@ function cleanLabel(string $label): string {
 
     <script>
     const selections = {};
-    let currentPayment = 'paynow';
+    let currentPayment = 'inperson';
 
     function currency(value) {
         return 'S$' + Number(value).toFixed(2);
@@ -437,7 +428,6 @@ function cleanLabel(string $label): string {
                 btn.classList.add('active');
                 currentPayment = btn.dataset.method;
                 document.getElementById('paymentInput').value = currentPayment;
-                document.getElementById('paynowFields').style.display   = currentPayment === 'paynow'   ? 'block' : 'none';
                 document.getElementById('inpersonFields').style.display = currentPayment === 'inperson' ? 'block' : 'none';
                 document.getElementById('cardFields').style.display     = currentPayment === 'card'     ? 'block' : 'none';
 
