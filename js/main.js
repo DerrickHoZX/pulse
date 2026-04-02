@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initProfilePasswordChecklist();
     initPasswordMatch();
     initProfilePasswordMatch();
+    initVenuesCarousel();
 });
 
 /* ---- Nav scroll class ---- */
@@ -47,17 +48,23 @@ function initScrollEffects() {
 }
 
 /* ---- Venues Carousel ---- */
-const venuesTrack = document.getElementById("venuesTrack");
-const venuesDots = document.getElementById("venuesDots");
-const venuesPrev = document.getElementById("venuesPrev");
-const venuesNext = document.getElementById("venuesNext");
+function initVenuesCarousel() {
+    const venuesTrack = document.getElementById("venuesTrack");
+    const venuesDots  = document.getElementById("venuesDots");
+    const venuesPrev  = document.getElementById("venuesPrev");
+    const venuesNext  = document.getElementById("venuesNext");
 
-if (venuesTrack) {
+    if (!venuesTrack || !venuesTrack.children.length) return;
+
     const venuesCards = Array.from(venuesTrack.children);
     let venuesCurrent = 0;
 
+    function getGap() {
+        return parseFloat(window.getComputedStyle(venuesTrack).gap) || 0;
+    }
+
     function getVisibleCount() {
-        const cardWidth = venuesCards[0].offsetWidth + 2;
+        const cardWidth = venuesCards[0].offsetWidth + getGap();
         return Math.round(venuesTrack.parentElement.offsetWidth / cardWidth);
     }
 
@@ -84,7 +91,7 @@ if (venuesTrack) {
 
     function goToVenueSlide(index) {
         venuesCurrent = Math.max(0, Math.min(index, getTotalSlides() - 1));
-        const offset = venuesCurrent * getVisibleCount() * (venuesCards[0].offsetWidth + 2);
+        const offset = venuesCurrent * getVisibleCount() * (venuesCards[0].offsetWidth + getGap());
         venuesTrack.style.transform = `translateX(-${offset}px)`;
         updateVenueDots();
     }

@@ -51,6 +51,11 @@ while ($row = $vcResult->fetch_assoc()) {
     $venueCounts[$row['name']] = $row['show_count'];
 }
 
+// Venues for carousel
+$venues_sql = "SELECT venue_id, name, google_maps_link FROM venues WHERE google_maps_link IS NOT NULL AND google_maps_link != '' ORDER BY venue_id";
+$venues_result = $conn->query($venues_sql);
+$venues = $venues_result->fetch_all(MYSQLI_ASSOC);
+
 $conn->close();
 ?>
 <!DOCTYPE html>
@@ -172,11 +177,6 @@ $conn->close();
                 </div>
 
                 <?php
-                    require_once "inc/db.inc.php";
-                    $venues_sql = "SELECT venue_id, name, google_maps_link FROM venues WHERE google_maps_link IS NOT NULL AND google_maps_link != '' ORDER BY venue_id";
-                    $venues_result = $pdo->query($venues_sql);
-                    $venues = $venues_result->fetchAll(PDO::FETCH_ASSOC);
-
                     // fallback images per venue — keyed by venue_id, then a generic default
                     $venue_images = [
                         1 => "https://images.unsplash.com/photo-1564585222527-c2777a5bc6cb?w=800&q=80",

@@ -869,8 +869,8 @@ a { color: inherit; }
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    flex: 0 0 calc(33.333% - 2px);
-    min-width: calc(33.333% - 2px);
+    flex: 0 0 calc((100vw - 96px) / 3);
+    min-width: calc((100vw - 96px) / 3);
     text-decoration: none;
     display: block;
 }
@@ -1184,7 +1184,7 @@ a { color: inherit; }
     .events-grid { grid-template-columns: repeat(2, 1fr); }
     .event-card.card-large { grid-column: span 2; }
     .venues-grid { grid-template-columns: 1fr 1fr; }
-    .venue-card { flex: 0 0 calc(50% - 2px); min-width: calc(50% - 2px); }
+    .venue-card { flex: 0 0 calc((100vw - 96px) / 2); min-width: calc((100vw - 96px) / 2); }
     .newsletter-box { padding: 40px; }
     .hero-dots { right: 20px; }
     .hero-scroll-hint { left: 20px; }
