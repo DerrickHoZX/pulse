@@ -9,7 +9,7 @@
     --pulse-surface: #141414;
     --pulse-card:    #1a1a1a;
     --pulse-border:  #2a2a2a;
-    --pulse-accent:  #5e54cc;
+    --pulse-accent:  #8f86ff;
     --pulse-gold:    #f5c842;
     --pulse-white:   #f5f5f0;
     --pulse-muted:   #888888;
@@ -1166,7 +1166,7 @@ a { color: inherit; }
     color: var(--pulse-white);
     box-shadow: 0 0 0 3px rgba(255,45,85,0.12);
 }
-.auth-card .form-control::placeholder { color: #555; }
+.auth-card .form-control::placeholder { color: #888; }
 
 .auth-card .form-check-input {
     background-color: var(--pulse-card);
@@ -1566,7 +1566,7 @@ a { color: inherit; }
 }
 .hero-search input::placeholder { color: var(--pulse-muted); }
 .hero-search button {
-    background: var(--pulse-accent);
+    background: #3d35a0;
     color: var(--pulse-white);
     border: none;
     padding: 10px 24px;
@@ -1620,7 +1620,7 @@ a { color: inherit; }
     outline: none;
 }
 
-.contact-form-col .form-control::placeholder { color: #555; }
+.contact-form-col .form-control::placeholder { color: #888; }
 
 .contact-form-col select.form-control option {
     background: var(--pulse-surface);
@@ -1699,7 +1699,7 @@ a.contact-info-value:hover { color: var(--pulse-accent); }
 .alert-pulse {
     background: rgba(82,71,184,0.1);
     border: 1px solid rgba(82,71,184,0.4);
-    color: #8b82e0;
+    color: #b8b2ff;
     padding: 14px 18px;
     font-size: 0.82rem;
     line-height: 1.8;
@@ -2082,7 +2082,7 @@ input:-webkit-autofill:active {
 .cat-qty-price { font-size: 1.15rem; font-weight: 700; color: var(--pulse-white); }
 .cat-qty-price span { font-size: 0.75rem; font-weight: 400; color: var(--pulse-muted); margin-left: 4px; }
 .cat-qty-avail { font-size: 0.72rem; color: var(--pulse-muted); margin-top: 4px; }
-.cat-qty-avail.soldout-text { color: #e24b4a; }
+.cat-qty-avail.soldout-text { color: #f05e5d; }
 
 /* Qty stepper */
 .qty-control {
@@ -2349,7 +2349,7 @@ input:-webkit-autofill:active {
     gap: 6px;
     font-size: 0.75rem;
     font-weight: 600;
-    color: #7B72D4;
+    color: #8f86ff;
     margin-bottom: 7px;
 }
 
@@ -2386,7 +2386,7 @@ input:-webkit-autofill:active {
 
 .eb-card-price .from {
     font-size: 0.65rem;
-    color: #666;
+    color: #999;
     text-transform: uppercase;
     letter-spacing: 0.07em;
     display: block;
@@ -2453,8 +2453,8 @@ input:-webkit-autofill:active {
     transition: all 0.18s;
     white-space: nowrap;
 }
-.eb-cat-pill:hover  { border-color: #5e54cc; color: #f0eefc; }
-.eb-cat-pill.active { background: #5e54cc; border-color: #5e54cc; color: #fff; }
+.eb-cat-pill:hover  { border-color: #8f86ff; color: #f0eefc; }
+.eb-cat-pill.active { background: #8f86ff; border-color: #8f86ff; color: #fff; }
 
 /* ---- Password Input with Eye Icon ---- */
 .pwd-input-wrap {
@@ -2533,7 +2533,7 @@ input:-webkit-autofill:focus {
     box-shadow: 0 0 0 3px rgba(82,71,184,0.12) !important;
     outline: none !important;
 }
-.booking-panel .form-control::placeholder { color: #555 !important; }
+.booking-panel .form-control::placeholder { color: #888 !important; }
 .booking-panel .form-label {
     font-size: 0.65rem !important;
     letter-spacing: 0.18em !important;
@@ -2628,11 +2628,11 @@ body {
     width: 100% !important;
 }
 .admin-form-control:focus {
-    border-color: #5e54cc !important;
+    border-color: #8f86ff !important;
     box-shadow: 0 0 0 3px rgba(94,84,204,0.12) !important;
     outline: none !important;
 }
-.admin-form-control::placeholder { color: #555 !important; }
+.admin-form-control::placeholder { color: #888 !important; }
 .admin-form-control option { background: #141414 !important; color: #f5f5f0 !important; }
 .admin-table .badge { font-size: 0.68rem !important; letter-spacing: 0.08em !important; }
 .card {
