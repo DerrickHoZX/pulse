@@ -47,6 +47,17 @@ function initScrollEffects() {
     targets.forEach(el => observer.observe(el));
 }
 
+/* ---- Category pill toggle ---- */
+function initCategoryPills() {
+    const pills = document.querySelectorAll(".cat-pill");
+    pills.forEach(pill => {
+        pill.addEventListener("click", function () {
+            pills.forEach(p => p.classList.remove("active"));
+            this.classList.add("active");
+        });
+    });
+}
+
 /* ---- Sync Bootstrap carousel dots to .hero-dot active state ---- */
 function initHeroCarousel() {
     const carousel = document.getElementById("heroCarousel");

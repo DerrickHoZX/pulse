@@ -103,13 +103,15 @@ function cleanLabel(string $label): string {
                         <div class="booking-form-section">
                             <div class="booking-form-title">Select Your Tickets</div>
 
-                            <?php if ($mapImg): ?>
                             <div style="display:flex;justify-content:flex-end;margin-bottom:14px;">
+                            <?php if ($mapImg): ?>
                                 <button type="button" class="btn btn-outline-accent" onclick="openMapModal()" style="display:inline-flex;align-items:center;gap:8px;padding:10px 16px;">
                                     View Seat Map
                                 </button>
-                            </div>
+                            <?php else: ?>
+                                <span style="font-size:0.78rem;color:var(--pulse-muted);">Seating map coming soon</span>
                             <?php endif; ?>
+                            </div>
 
                             <div class="cat-qty-grid">
                                 <?php foreach ($sections as $i => $sec):
@@ -318,7 +320,9 @@ function cleanLabel(string $label): string {
                 <button class="seatmap-modal-close" onclick="closeMapModal()" aria-label="Close seat map">X</button>
             </div>
             <div class="seatmap-modal-body">
-                <img src="<?= htmlspecialchars($mapImg) ?>" alt="<?= htmlspecialchars($event['venue_name']) ?> seating plan" style="width:100%;height:auto;display:block;">
+                <img src="<?= htmlspecialchars($mapImg) ?>" alt="<?= htmlspecialchars($event['venue_name']) ?> seating plan" style="width:100%;height:auto;display:block;"
+                     onerror="this.style.display='none';document.getElementById('seatmapUnavailable').style.display='flex';">
+                <div id="seatmapUnavailable" style="display:none;align-items:center;justify-content:center;padding:48px 24px;color:var(--pulse-muted);font-size:0.85rem;">Seating map not available.</div>
             </div>
         </div>
     </div>

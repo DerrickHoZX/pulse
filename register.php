@@ -12,7 +12,7 @@
             <div class="auth-card">
                 <h1>Create Account</h1>
                 <p style="color: var(--pulse-muted); font-size:0.85rem; margin-bottom: 32px; font-weight:300;">
-                    Already a member? <a href="login.php" style="color: var(--pulse-accent); text-decoration:underline;">Sign in here</a>.
+                    Already a member? <a href="login.php" style="color: var(--pulse-accent); text-decoration:none;">Sign in here</a>.
                 </p>
 
                 <?php if (isset($_GET['error'])): ?>

@@ -76,9 +76,9 @@ if ($stmt->execute()) {
     $_SESSION['email']   = $email;
     $_SESSION['role']    = 'member';
     $redirect = $_GET['redirect'] ?? '../index.php';
-    header('Location: ' . $redirect);
+    header('Location: ' . $redirect); exit;
 } else {
-    header('Location: ../register.php?error=dbfail');
+    header('Location: ../register.php?error=dbfail'); exit;
 }
 
 $stmt->close();
