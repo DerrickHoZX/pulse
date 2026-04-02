@@ -802,11 +802,117 @@ a { color: inherit; }
 }
 .btn-dark-solid:hover { background: #1a1a1a; color: var(--pulse-white); }
 
-/* ---- Venues ---- */
+/* ---- Venues Carousel ---- */
+.venues-carousel-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.venues-carousel-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--pulse-border);
+    background: var(--pulse-surface);
+    color: var(--pulse-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+.venues-carousel-btn:hover {
+    background: var(--pulse-border);
+}
+
+.venues-carousel-wrapper {
+    overflow: hidden;
+    width: 100%;
+}
+
+.venues-carousel-track {
+    display: flex;
+    gap: 2px;
+    transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+}
+
+.venues-carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 18px;
+}
+.venues-carousel-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--pulse-border);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    border: none;
+    padding: 0;
+}
+.venues-carousel-dot.active {
+    background: var(--pulse-white);
+    transform: scale(1.25);
+}
+
 .venues-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 2px;
+}
+
+.venue-card {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    flex: 0 0 calc(33.333% - 2px);
+    min-width: calc(33.333% - 2px);
+    text-decoration: none;
+    display: block;
+}
+
+.venue-card-img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(40%);
+    transition: filter 0.5s, transform 0.5s;
+}
+.venue-card:hover .venue-card-img {
+    filter: grayscale(0%);
+    transform: scale(1.04);
+}
+
+.venue-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(8,8,8,0.9) 0%, transparent 60%);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.venue-name {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--pulse-white);
+}
+.venue-count {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--pulse-muted);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
 }
 
 .venue-card {
@@ -1078,6 +1184,7 @@ a { color: inherit; }
     .events-grid { grid-template-columns: repeat(2, 1fr); }
     .event-card.card-large { grid-column: span 2; }
     .venues-grid { grid-template-columns: 1fr 1fr; }
+    .venue-card { flex: 0 0 calc(50% - 2px); min-width: calc(50% - 2px); }
     .newsletter-box { padding: 40px; }
     .hero-dots { right: 20px; }
     .hero-scroll-hint { left: 20px; }
@@ -1089,6 +1196,7 @@ a { color: inherit; }
     .events-grid { grid-template-columns: 1fr; }
     .event-card.card-large { grid-column: span 1; }
     .venues-grid { grid-template-columns: 1fr; }
+    .venue-card { flex: 0 0 100%; min-width: 100%; }
     .newsletter-box { padding: 32px 24px; }
     .promo-banner { padding: 40px 32px; }
     .upcoming-item { grid-template-columns: 72px 1fr; }
@@ -2222,28 +2330,6 @@ input:-webkit-autofill:active {
     backdrop-filter: blur(8px);
 }
 
-/* Heart button — top right */
-.eb-card-heart {
-    position: absolute;
-    top: 12px; right: 12px;
-    z-index: 2;
-    width: 34px; height: 34px;
-    background: rgba(255,255,255,0.95);
-    border: none;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: #aaa;
-    font-size: 0.95rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    transition: all 150ms ease;
-    line-height: 1;
-}
-.eb-card-heart:hover  { color: #D9527A; transform: scale(1.12); }
-.eb-card-heart.liked  { color: #D9527A; }
-
 /* Body */
 .eb-card-body {
     padding: 16px 18px 18px;
@@ -2488,6 +2574,7 @@ input:-webkit-autofill:focus {
 body {
     color: #e5e7eb;
 }
+
 /* ── Admin Dark Tables ── */
 .admin-table > :not(caption) > * > * {
     background-color: #141414 !important;

@@ -51,19 +51,7 @@ $isAdmin  = $isAdminPage;
                     <a class="nav-link <?= $isHome ? 'active' : '' ?>" href="<?= $homeLink ?>">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= $isEvents ? 'active' : '' ?>" href="<?= $eventsLink ?>">All Events</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
-                    <ul class="dropdown-menu dropdown-menu-dark pulse-dropdown">
-                        <li><a class="dropdown-item" href="<?= $eventsLink ?>">Concerts</a></li>
-                        <li><a class="dropdown-item" href="<?= $eventsLink ?>?cat=Festivals">Festivals</a></li>
-                        <li><a class="dropdown-item" href="<?= $eventsLink ?>?cat=Theatre">Theatre &amp; Arts</a></li>
-                        <li><a class="dropdown-item" href="<?= $eventsLink ?>?cat=Sports">Sports</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="<?= $eventsLink ?>">On Sale Now</a></li>
-                    </ul>
+                    <a class="nav-link <?= $isEvents ? 'active' : '' ?>" href="<?= $eventsLink ?>">Events</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= $venuesLink ?>">Venues</a>

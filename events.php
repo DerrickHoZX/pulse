@@ -62,22 +62,6 @@ $count = count($events);
 $venues = $conn->query("SELECT venue_id, name FROM venues ORDER BY name")->fetch_all(MYSQLI_ASSOC);
 $conn->close();
 
-$categories = [
-    '' => 'All Events',
-    'Rock' => 'Rock & Metal',
-    'K-Pop' => 'K-Pop & J-Pop',
-    'Hip-Hop' => 'Hip-Hop & R&B',
-    'Classical' => 'Classical',
-    'Electronic' => 'Electronic / EDM',
-    'Jazz & Blues' => 'Jazz & Blues',
-    'Theatre' => 'Theatre & Arts',
-    'Sports' => 'Sports',
-    'Festivals' => 'Festivals',
-    'Pop / Jazz' => 'Pop / Jazz',
-    'Alternative' => 'Alternative',
-    'Pop' => 'Pop',
-    'Comedy' => 'Comedy',
-];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -95,38 +79,21 @@ $categories = [
         <!-- Page header -->
         <div class="events-page-wrap">
             <div class="container-fluid px-5">
-                <nav aria-label="breadcrumb" style="margin-bottom:10px;">
-                    <ol class="breadcrumb mb-0" style="background:none;padding:0;font-size:0.78rem;">
-                        <li class="breadcrumb-item"><a href="index.php"
-                                style="color:var(--pulse-muted);text-decoration:none;">Home</a></li>
-                        <li class="breadcrumb-item active" style="color:var(--pulse-muted);">Events</li>
-                    </ol>
-                </nav>
                 <h1 class="page-hero-title" style="margin-bottom:6px;">All <em>Events</em></h1>
                 <p style="color:var(--pulse-muted);font-size:0.88rem;margin:0;">
                     Concerts, festivals, theatre, sports and more across Singapore.
                 </p>
-
-                <!-- Category pills -->
-                <form method="GET" action="events.php" id="filterForm">
-                    <input type="hidden" name="cat" id="catInput" value="<?= htmlspecialchars($cat) ?>">
-                    <input type="hidden" name="q" id="qInput" value="<?= htmlspecialchars($q) ?>">
-                    <input type="hidden" name="venue_id" id="venueInput" value="<?= $venue_id ?>">
-                    <input type="hidden" name="date" id="dateInput" value="<?= htmlspecialchars($date) ?>">
-
-                    <div class="eb-cat-pills">
-                        <?php foreach ($categories as $val => $label): ?>
-                            <button type="button" class="eb-cat-pill <?= $cat === $val ? 'active' : '' ?>"
-                                onclick="setCat('<?= $val ?>')">
-                                <?= htmlspecialchars($label) ?>
-                            </button>
-                        <?php endforeach; ?>
-                    </div>
-                </form>
             </div>
         </div>
 
         <!-- Filter bar -->
+        <form method="GET" action="events.php" id="filterForm" style="display:none;">
+            <input type="hidden" name="cat" id="catInput" value="<?= htmlspecialchars($cat) ?>">
+            <input type="hidden" name="q" id="qInput" value="<?= htmlspecialchars($q) ?>">
+            <input type="hidden" name="venue_id" id="venueInput" value="<?= $venue_id ?>">
+            <input type="hidden" name="date" id="dateInput" value="<?= htmlspecialchars($date) ?>">
+        </form>
+
         <div class="d-flex align-items-center gap-3 flex-wrap mb-4 pb-4 py-5"
             style="border-bottom:1px solid var(--pulse-border);">
 
@@ -143,6 +110,15 @@ $categories = [
                     onclick="document.getElementById('qInput').value=document.getElementById('searchInput').value;document.getElementById('filterForm').submit();">Search</button>
             </div>
 
+            <select class="filter-select" aria-label="Filter by category"
+                onchange="document.getElementById('catInput').value=this.value;document.getElementById('filterForm').submit();">
+                <option value="">All Categories</option>
+                <option value="Concerts" <?= $cat === 'Concerts' ? 'selected' : '' ?>>Concerts</option>
+                <option value="Festivals" <?= $cat === 'Festivals' ? 'selected' : '' ?>>Festivals</option>
+                <option value="Theatre" <?= $cat === 'Theatre' ? 'selected' : '' ?>>Theatre & Arts</option>
+                <option value="Sports" <?= $cat === 'Sports' ? 'selected' : '' ?>>Sports</option>
+            </select>
+
             <select class="filter-select" aria-label="Filter by venue"
                 onchange="document.getElementById('venueInput').value=this.value;document.getElementById('filterForm').submit();">
                 <option value="">All Venues</option>
@@ -153,7 +129,7 @@ $categories = [
                 <?php endforeach; ?>
             </select>
 
-            <input type="date" class="filter-select" aria-label="Filter by date" value="<?= htmlspecialchars($date) ?>" style="color-scheme:dark;"
+            <input type="date" class="filter-select" aria-label="Filter by date" value="<?= htmlspecialchars($date) ?>" style="color-scheme:dark;" aria-label="Filter by date"
                 onchange="document.getElementById('dateInput').value=this.value;document.getElementById('filterForm').submit();">
 
             <?php if ($q || $cat || $venue_id || $date): ?>
@@ -244,25 +220,7 @@ $categories = [
     <?php include "inc/footer.inc.php" ?>
 
     <script>
-        function setCat(val) {
-            document.getElementById('catInput').value = val;
-            document.getElementById('filterForm').submit();
-        }
 
-        function toggleHeart(e, btn, eventId) {
-            e.stopPropagation();
-            const key = 'pulse_fav_' + eventId;
-            const liked = localStorage.getItem(key);
-            if (liked) {
-                localStorage.removeItem(key);
-                btn.classList.remove('liked');
-                btn.innerHTML = '&#9825;'; // hollow heart
-            } else {
-                localStorage.setItem(key, '1');
-                btn.classList.add('liked');
-                btn.innerHTML = '&#9829;'; // filled heart
-            }
-        }
 
         // Restore saved hearts on load
         document.addEventListener('DOMContentLoaded', function () {
