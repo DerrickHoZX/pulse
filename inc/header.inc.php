@@ -34,9 +34,17 @@
                 <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/>
                 <path d="M12 12L15.5 15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
-            <input type="text" placeholder="Artist, event, or venue...">
-            <button type="button">Search</button>
+            <input type="text" id="heroSearchInput" placeholder="Artist, event, or venue..."
+                onkeydown="if(event.key==='Enter') goSearch();">
+            <button type="button" onclick="goSearch()">Search</button>
         </div>
+        <script>
+            function goSearch() {
+                var q = document.getElementById('heroSearchInput').value.trim();
+                // blank search sends you to events.php with no query (shows all events)
+                window.location.href = 'events.php' + (q ? '?q=' + encodeURIComponent(q) : '');
+            }
+        </script>
         <div class="d-flex gap-3 flex-wrap">
             <a href="#events" class="btn btn-accent">
                 Explore Events
@@ -44,7 +52,7 @@
                     <path d="M2 7H12M12 7L8 3M12 7L8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                 </svg>
             </a>
-            <a href="events.php" class="btn btn-outline-light">View Calendar</a>
+            <a href="events.php?open_calendar=1" class="btn btn-outline-light">View Calendar</a>
         </div>
     </div>
 

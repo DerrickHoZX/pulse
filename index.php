@@ -241,6 +241,62 @@ $conn->close();
                 </div>
             </div>
         </main>
+
+        <!-- Venue carousel fix -->
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const track   = document.getElementById("venuesTrack");
+            const dotsBox = document.getElementById("venuesDots");
+            const btnPrev = document.getElementById("venuesPrev");
+            const btnNext = document.getElementById("venuesNext");
+
+            if (!track || !btnPrev || !btnNext) return;
+
+            const cards = Array.from(track.children);
+            let current = 0;
+
+            function cardsPerView() {
+                if (window.innerWidth < 576) return 1;
+                if (window.innerWidth < 992) return 2;
+                return 3;
+            }
+
+            function totalSlides() {
+                return Math.ceil(cards.length / cardsPerView());
+            }
+
+            function goTo(index) {
+                current = Math.max(0, Math.min(index, totalSlides() - 1));
+                track.style.transform = `translateX(-${current * track.parentElement.offsetWidth}px)`;
+                dotsBox.querySelectorAll(".venues-carousel-dot").forEach((d, i) => {
+                    d.classList.toggle("active", i === current);
+                });
+            }
+
+            function buildDots() {
+                dotsBox.innerHTML = "";
+                for (let i = 0; i < totalSlides(); i++) {
+                    const dot = document.createElement("button");
+                    dot.className = "venues-carousel-dot" + (i === current ? " active" : "");
+                    dot.setAttribute("aria-label", "Go to slide " + (i + 1));
+                    dot.addEventListener("click", () => goTo(i));
+                    dotsBox.appendChild(dot);
+                }
+            }
+
+            btnPrev.addEventListener("click", () => goTo(current - 1));
+            btnNext.addEventListener("click", () => goTo(current + 1));
+
+            window.addEventListener("resize", () => {
+                current = 0;
+                track.style.transform = "translateX(0)";
+                buildDots();
+            });
+
+            buildDots();
+        });
+        </script>
+
         <?php include "inc/footer.inc.php" ?>
     </body>
 </html>

@@ -869,8 +869,8 @@ a { color: inherit; }
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    flex: 0 0 calc((100vw - 96px) / 3);
-    min-width: calc((100vw - 96px) / 3);
+    flex: 0 0 calc((100% - 4px) / 3);
+    min-width: calc((100% - 4px) / 3);
     text-decoration: none;
     display: block;
 }
@@ -957,6 +957,11 @@ a { color: inherit; }
     text-transform: uppercase;
     color: var(--pulse-muted);
     margin-top: 4px;
+}
+
+.venue-card-spacer {
+    background: #000;
+    pointer-events: none;
 }
 
 /* ---- Newsletter ---- */

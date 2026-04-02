@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initProfilePasswordChecklist();
     initPasswordMatch();
     initProfilePasswordMatch();
-    initVenuesCarousel();
+    initHeroCarousel();
 });
 
 /* ---- Nav scroll class ---- */
@@ -47,73 +47,8 @@ function initScrollEffects() {
     targets.forEach(el => observer.observe(el));
 }
 
-/* ---- Venues Carousel ---- */
-function initVenuesCarousel() {
-    const venuesTrack = document.getElementById("venuesTrack");
-    const venuesDots  = document.getElementById("venuesDots");
-    const venuesPrev  = document.getElementById("venuesPrev");
-    const venuesNext  = document.getElementById("venuesNext");
-
-    if (!venuesTrack || !venuesTrack.children.length) return;
-
-    const venuesCards = Array.from(venuesTrack.children);
-    let venuesCurrent = 0;
-
-    function getGap() {
-        return parseFloat(window.getComputedStyle(venuesTrack).gap) || 0;
-    }
-
-    function getVisibleCount() {
-        const cardWidth = venuesCards[0].offsetWidth + getGap();
-        return Math.round(venuesTrack.parentElement.offsetWidth / cardWidth);
-    }
-
-    function getTotalSlides() {
-        return Math.ceil(venuesCards.length / getVisibleCount());
-    }
-
-    function buildVenueDots() {
-        venuesDots.innerHTML = "";
-        for (let i = 0; i < getTotalSlides(); i++) {
-            const dot = document.createElement("button");
-            dot.className = "venues-carousel-dot" + (i === venuesCurrent ? " active" : "");
-            dot.setAttribute("aria-label", "Go to slide " + (i + 1));
-            dot.addEventListener("click", () => goToVenueSlide(i));
-            venuesDots.appendChild(dot);
-        }
-    }
-
-    function updateVenueDots() {
-        venuesDots.querySelectorAll(".venues-carousel-dot").forEach((d, i) => {
-            d.classList.toggle("active", i === venuesCurrent);
-        });
-    }
-
-    function goToVenueSlide(index) {
-        venuesCurrent = Math.max(0, Math.min(index, getTotalSlides() - 1));
-        const offset = venuesCurrent * getVisibleCount() * (venuesCards[0].offsetWidth + getGap());
-        venuesTrack.style.transform = `translateX(-${offset}px)`;
-        updateVenueDots();
-    }
-
-    venuesPrev.addEventListener("click", () => goToVenueSlide(venuesCurrent - 1));
-    venuesNext.addEventListener("click", () => goToVenueSlide(venuesCurrent + 1));
-
-    let venuesResizeTimer;
-    window.addEventListener("resize", () => {
-        clearTimeout(venuesResizeTimer);
-        venuesResizeTimer = setTimeout(() => {
-            venuesCurrent = 0;
-            venuesTrack.style.transform = "translateX(0)";
-            buildVenueDots();
-        }, 200);
-    });
-
-    buildVenueDots();
-}
-
 /* ---- Sync Bootstrap carousel dots to .hero-dot active state ---- */
-document.addEventListener("DOMContentLoaded", function () {
+function initHeroCarousel() {
     const carousel = document.getElementById("heroCarousel");
     if (!carousel) return;
 
@@ -121,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const dots = document.querySelectorAll(".hero-dot");
         dots.forEach((d, i) => d.classList.toggle("active", i === e.to));
     });
-});
+}
 
 /* ---- Toggle Password Visibility ---- */
 function togglePwd(fieldId, btn) {

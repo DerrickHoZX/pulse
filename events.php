@@ -220,17 +220,18 @@ $conn->close();
     <?php include "inc/footer.inc.php" ?>
 
     <script>
-
-
-        // Restore saved hearts on load
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('.eb-card-heart').forEach(btn => {
-                const id = btn.dataset.eventId;
-                if (localStorage.getItem('pulse_fav_' + id)) {
-                    btn.classList.add('liked');
-                    btn.innerHTML = '&#9829;';
+        // If coming from the homepage "View Calendar" button, pop open the date picker
+        window.addEventListener('load', function () {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('open_calendar') === '1') {
+                const datePicker = document.querySelector('input[type="date"].filter-select');
+                if (datePicker) {
+                    setTimeout(function () {
+                        datePicker.focus();
+                        datePicker.showPicker();
+                    }, 150);
                 }
-            });
+            }
         });
     </script>
 </body>
