@@ -69,7 +69,7 @@ $upcoming = array_filter($bookings, function ($b) {
         padding: 32px 0 28px;
         margin-bottom: 40px;
     }
-    .dash-header h1 { font-family: var(--font-display); font-size: 2.5rem; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 4px; }
+    .dash-header h1 { font-size: 1.8rem; margin-bottom: 4px; }
     .dash-header p { color: var(--pulse-muted); font-size: 0.85rem; margin: 0; }
     .dash-stats {
         display: grid;
@@ -156,7 +156,7 @@ $upcoming = array_filter($bookings, function ($b) {
         <div class="dash-header">
             <div class="container-fluid px-5">
                 <h1>My Bookings</h1>
-                <p>Welcome back, <?= htmlspecialchars(trim(($user['fname'] ?? '') . ' ' . ($user['lname'] ?? ''))) ?></p>
+                <p>Welcome back, <strong style="color:var(--pulse-white);"><?= htmlspecialchars(trim(($user['fname'] ?? '') . ' ' . ($user['lname'] ?? ''))) ?></strong> &middot; <?= htmlspecialchars($user['email'] ?? '') ?></p>
             </div>
         </div>
 

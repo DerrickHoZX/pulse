@@ -74,7 +74,7 @@ $conn->close();
 <body>
     <?php include "inc/nav.inc.php" ?>
     
-    <main class="container-fluid px-5" style="padding-bottom: 60px;">
+    <main class="container-fluid px-5">
 
         <!-- Page header -->
         <div class="events-page-wrap">
