@@ -112,11 +112,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $seatCount = 0;
 
             for ($r = 0; $r < $rows; $r++) {
-                $rowLabel = chr(65 + $r);
+                if ($r < 26) {
+                    $rowLabel = chr(65 + $r);
+                } else {
+                    $rowLabel = chr(65 + intval(($r - 26) / 26)) . chr(65 + (($r - 26) % 26));
+                }
                 for ($s = 1; $s <= $seatsPerRow; $s++) {
-                    if ($seatCount >= $totalSeats) {
+                    if ($seatCount >= $totalSeats)
                         break;
-                    }
                     $seat->bind_param('isi', $section_id, $rowLabel, $s);
                     $seat->execute();
                     $seatCount++;
