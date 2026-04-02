@@ -24,7 +24,7 @@ $sql = "SELECT e.event_id, e.title, e.category, e.event_date, e.event_time,
            FROM events e
            JOIN venues v ON e.venue_id = v.venue_id
            LEFT JOIN seat_sections ss ON ss.event_id = e.event_id
-           WHERE e.is_active = 1";
+           WHERE e.is_active = 1 AND e.event_date >= CURDATE()";
 
 $params = [];
 $types = '';

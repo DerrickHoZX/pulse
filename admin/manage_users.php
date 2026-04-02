@@ -60,6 +60,38 @@ $conn->close();
 <head>
     <title>PULSE Admin - Manage Users</title>
     <?php include "../inc/head.inc.php"; ?>
+    <style>
+    .admin-table > :not(caption) > * > * {
+        background-color: #141414 !important;
+        color: #f5f5f0 !important;
+        border-color: #2a2a2a !important;
+    }
+    .admin-table thead > tr > th {
+        background-color: #1a1a1a !important;
+        color: #888 !important;
+        font-size: 0.65rem !important;
+        letter-spacing: 0.18em !important;
+        text-transform: uppercase !important;
+        font-weight: 500 !important;
+        padding: 14px 16px !important;
+    }
+    .admin-table tbody > tr:hover > td {
+        background-color: #1a1a1a !important;
+    }
+    .admin-panel-card {
+        background: #141414 !important;
+        border: 1px solid #2a2a2a !important;
+        overflow: hidden;
+    }
+    .card {
+        background: #141414 !important;
+        border: 1px solid #2a2a2a !important;
+        color: #f5f5f0 !important;
+    }
+    .card h3, .card h5, .card span {
+        color: #f5f5f0 !important;
+    }
+</style>
 </head>
 <body>
     <?php include "../inc/nav.inc.php"; ?>
