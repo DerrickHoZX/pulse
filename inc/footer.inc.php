@@ -16,7 +16,7 @@
             <div class="col-lg-2 col-md-3 col-6 ms-auto">
                 <h2 class="footer-col-title">Explore</h2>
                 <ul class="footer-links">
-                    <li><a href="<?= $base ?>events.php">Concerts</a></li>
+                    <li><a href="<?= $base ?>events.php?cat=Concerts">Concerts</a></li>
                     <li><a href="<?= $base ?>events.php?cat=Festivals">Festivals</a></li>
                     <li><a href="<?= $base ?>events.php?cat=Theatre">Theatre &amp; Arts</a></li>
                     <li><a href="<?= $base ?>events.php?cat=Sports">Sports</a></li>

@@ -128,7 +128,7 @@ $upcoming = array_filter($bookings, function ($b) {
     }
     .status-confirmed { background: rgba(15,110,86,0.15); color: #4cd964; border: 1px solid rgba(15,110,86,0.3); }
     .status-pending { background: rgba(217,119,6,0.15); color: #f5a623; border: 1px solid rgba(217,119,6,0.3); }
-    .status-cancelled { background: rgba(226,75,74,0.1); color: #e24b4a; border: 1px solid rgba(226,75,74,0.2); }
+    .status-cancelled { background: rgba(226,75,74,0.1); color: #ff5555; border: 1px solid rgba(226,75,74,0.2); }
     .booking-total { font-size: 1.05rem; font-weight: 700; color: var(--pulse-white); }
     .booking-total small { font-size: 0.68rem; color: var(--pulse-muted); font-weight: 400; display: block; }
     .booking-ref { font-size: 0.65rem; color: var(--pulse-muted); margin-top: 6px; }
