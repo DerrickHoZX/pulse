@@ -12,7 +12,7 @@
             <div class="auth-card">
                 <h1>Sign In</h1>
                 <p style="color: var(--pulse-muted); font-size:0.85rem; margin-bottom: 32px; font-weight:300;">
-                    New here? <a href="register.php" style="color: var(--pulse-accent); text-decoration:none;">Create an account</a>.
+                    New here? <a href="register.php" style="color: var(--pulse-accent); text-decoration:underline;">Create an account</a>.
                 </p>
 
                 <?php if (isset($_GET['success']) && $_GET['success'] === 'pwdreset'): ?>
@@ -67,7 +67,7 @@
                 </form>
 
                 <p style="text-align:center; margin-top:20px;">
-                    <a href="forgot_password.php" style="color: var(--pulse-muted); font-size:0.78rem; text-decoration:none;">Forgot your password?</a>
+                    <a href="forgot_password.php" style="color: var(--pulse-muted); font-size:0.78rem; text-decoration:underline;">Forgot your password?</a>
                 </p>
             </div>
         </main>

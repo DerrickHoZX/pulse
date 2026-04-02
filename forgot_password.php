@@ -40,7 +40,7 @@
             </form>
 
             <p style="text-align:center; margin-top:24px;">
-                <a href="login.php" style="color: var(--pulse-muted); font-size:0.78rem; text-decoration:none;">
+                <a href="login.php" style="color: var(--pulse-muted); font-size:0.78rem; text-decoration:underline;">
                     ← Back to Sign In
                 </a>
             </p>

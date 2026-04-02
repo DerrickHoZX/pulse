@@ -132,6 +132,8 @@ $upcoming = array_filter($bookings, function ($b) {
     .booking-total { font-size: 1.05rem; font-weight: 700; color: var(--pulse-white); }
     .booking-total small { font-size: 0.68rem; color: var(--pulse-muted); font-weight: 400; display: block; }
     .booking-ref { font-size: 0.65rem; color: var(--pulse-muted); margin-top: 6px; }
+    .booking-card.past-card { border-color: rgba(42,42,42,0.5); }
+    .booking-card.past-card .booking-img img { opacity: 0.45; }
     .empty-state { text-align: center; padding: 80px 20px; color: var(--pulse-muted); }
     .empty-state h3 { color: var(--pulse-white); margin-bottom: 10px; }
     .resume-btn {
@@ -245,7 +247,7 @@ $upcoming = array_filter($bookings, function ($b) {
                     $ref = 'PULSE-' . date('Y', strtotime($b['created_at'])) . '-' . str_pad($b['booking_id'], 5, '0', STR_PAD_LEFT);
                     $isPast = strtotime($b['event_date']) < strtotime('today');
                 ?>
-                <div class="booking-card" style="<?= $isPast ? 'opacity:0.65;' : '' ?>">
+                <div class="booking-card<?= $isPast ? ' past-card' : '' ?>">
                     <div class="booking-img"><img src="<?= htmlspecialchars(resolveImageSrc($b['img_url'] ?? '')) ?>" alt="<?= htmlspecialchars($b['title']) ?> event poster"></div>
                     <div class="booking-info">
                         <div class="booking-event-cat"><?= htmlspecialchars($b['category']) ?></div>

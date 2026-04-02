@@ -88,7 +88,7 @@ function cleanLabel(string $label): string {
 
             <div class="booking-event-bar">
                 <div>
-                    <div class="booking-event-name"><?= htmlspecialchars($event['title']) ?></div>
+                    <h1 class="booking-event-name"><?= htmlspecialchars($event['title']) ?></h1>
                     <div class="booking-event-meta"><?= htmlspecialchars($event['venue_name']) ?> &nbsp;&middot;&nbsp; <?= $dateStr ?>, <?= $timeStr ?></div>
                 </div>
                 <span class="tag-chip" style="border-color:rgba(248,244,238,0.25);color:rgba(248,244,238,0.75);background:transparent;">
@@ -301,16 +301,16 @@ function cleanLabel(string $label): string {
     </main>
 
     <?php if ($mapImg): ?>
-    <div class="seatmap-modal-overlay" id="seatMapModal" onclick="if(event.target===this)closeMapModal();">
+    <div class="seatmap-modal-overlay" id="seatMapModal" role="dialog" aria-modal="true" aria-labelledby="seatMapTitle" onclick="if(event.target===this)closeMapModal();">
         <div class="seatmap-modal">
             <div class="seatmap-modal-header">
                 <div>
-                    <div class="seatmap-modal-title"><?= htmlspecialchars($event['venue_name']) ?> &mdash; Seating Plan</div>
+                    <div class="seatmap-modal-title" id="seatMapTitle"><?= htmlspecialchars($event['venue_name']) ?> &mdash; Seating Plan</div>
                     <div class="seatmap-modal-sub">For reference only. Layout may vary by event.</div>
                 </div>
                 <button class="seatmap-modal-close" onclick="closeMapModal()" aria-label="Close seat map">X</button>
             </div>
-            <div class="seatmap-modal-body">
+            <div class="seatmap-modal-body" tabindex="0" aria-label="Seating plan image">
                 <img src="<?= htmlspecialchars($mapImg) ?>" alt="<?= htmlspecialchars($event['venue_name']) ?> seating plan" style="width:100%;height:auto;display:block;"
                      onerror="this.style.display='none';document.getElementById('seatmapUnavailable').style.display='flex';">
                 <div id="seatmapUnavailable" style="display:none;align-items:center;justify-content:center;padding:48px 24px;color:var(--pulse-muted);font-size:0.85rem;">Seating map not available.</div>

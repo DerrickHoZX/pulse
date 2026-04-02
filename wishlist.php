@@ -75,7 +75,7 @@ $conn->close();
 <body>
     <?php include "inc/nav.inc.php" ?>
 
-    <div class="dash-wrap">
+    <main class="dash-wrap">
         <div class="dash-header">
             <div class="container">
                 <h1>My Wishlist</h1>
@@ -123,7 +123,7 @@ $conn->close();
             </div>
             <?php endif; ?>
         </div>
-    </div>
+    </main>
 
     <?php include "inc/footer.inc.php" ?>
     <script>

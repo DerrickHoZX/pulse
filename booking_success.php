@@ -132,7 +132,7 @@ $bookingRef = 'PULSE-' . date('Y') . '-' . str_pad($bookingId, 5, '0', STR_PAD_L
     <main class="booking-page-wrapper">
         <div class="container" style="max-width:700px;padding-top:80px;padding-bottom:60px;">
             <div class="booking-success">
-                <div class="success-title">Booking Confirmed</div>
+                <h1 class="success-title">Booking Confirmed</h1>
                 <div class="success-ref"><?= htmlspecialchars($bookingRef) ?></div>
 
                 <?php if ($seatLabels): ?>

@@ -98,7 +98,7 @@ $fname = htmlspecialchars($_SESSION['otp_pending_fname'] ?? 'Admin');
 
             <p style="text-align:center; margin-top:28px;">
                 <a href="login.php" onclick="return confirm('Going back will cancel this sign-in. Continue?')"
-                   style="color:var(--pulse-muted); font-size:0.78rem; text-decoration:none;">
+                   style="color:var(--pulse-muted); font-size:0.78rem; text-decoration:underline;">
                     ← Back to Sign In
                 </a>
             </p>

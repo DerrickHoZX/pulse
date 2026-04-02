@@ -277,7 +277,7 @@ function cleanLabel(string $label): string
             justify-content: center;
             gap: 8px;
             width: 100%;
-            background: var(--pulse-accent);
+            background: #5247b8;
             color: #fff;
             border: none;
             padding: 15px;
@@ -293,7 +293,7 @@ function cleanLabel(string $label): string
         }
 
         .btn-get-tickets:hover {
-            background: #4239a6;
+            background: #3d38a0;
             color: #fff;
             text-decoration: none;
         }
@@ -322,6 +322,7 @@ function cleanLabel(string $label): string
     <?php
     $bannerSrc = resolveImageSrc($images['banner'] ?: $images['poster'] ?: '');
     ?>
+    <main id="main-content">
     <div style="margin-top: 100px;"></div>
 
     <div class="detail-banner">
@@ -380,15 +381,15 @@ function cleanLabel(string $label): string
                         <div class="d-flex gap-3 flex-wrap">
                             <?php if ($isPast): ?>
                                 <button class="btn btn-accent" disabled
-                                    style="opacity:0.4;display:inline-flex;align-items:center;gap:8px;padding:12px 26px;">Past Event</button>
+                                    style="opacity:0.4;display:inline-flex;align-items:center;gap:8px;padding:12px 26px;background:#5247b8;border-radius:6px;">Past Event</button>
                             <?php elseif ($totalAvail > 0): ?>
                                 <a href="booking.php?event_id=<?= $event_id ?>" class="btn btn-accent"
-                                    style="display:inline-flex;align-items:center;gap:8px;padding:12px 26px;">
+                                    style="display:inline-flex;align-items:center;gap:8px;padding:12px 26px;background:#5247b8;border-radius:6px;">
                                     Get Tickets
                                 </a>
                             <?php else: ?>
                                 <button class="btn btn-accent" disabled
-                                    style="opacity:0.4;display:inline-flex;align-items:center;gap:8px;padding:12px 26px;">Sold Out</button>
+                                    style="opacity:0.4;display:inline-flex;align-items:center;gap:8px;padding:12px 26px;background:#5247b8;border-radius:6px;">Sold Out</button>
                             <?php endif; ?>
 
                             <button onclick="toggleHeart(<?= $event_id ?>)" id="heartBtn" class="btn btn-outline-accent"
@@ -561,16 +562,18 @@ function cleanLabel(string $label): string
         </div>
     </div>
 
-    <div class="seatmap-modal-overlay" id="seatMapModal" onclick="if(event.target===this)closeSeatMap();">
+    </main>
+
+    <div class="seatmap-modal-overlay" id="seatMapModal" role="dialog" aria-modal="true" aria-labelledby="seatMapTitle" onclick="if(event.target===this)closeSeatMap();">
         <div class="seatmap-modal">
             <div class="seatmap-modal-header">
                 <div>
-                    <div class="seatmap-modal-title"><?= htmlspecialchars($event['venue_name']) ?> &mdash; Seating Plan</div>
+                    <div class="seatmap-modal-title" id="seatMapTitle"><?= htmlspecialchars($event['venue_name']) ?> &mdash; Seating Plan</div>
                     <div class="seatmap-modal-sub">For reference only. Layout may vary by event.</div>
                 </div>
                 <button class="seatmap-modal-close" onclick="closeSeatMap()" aria-label="Close seating plan">X</button>
             </div>
-            <div class="seatmap-modal-body">
+            <div class="seatmap-modal-body" tabindex="0" aria-label="Seating plan image">
                 <?php if ($images['seatmap']): ?>
                     <img src="<?= htmlspecialchars(resolveImageSrc($images['seatmap'])) ?>"
                         alt="<?= htmlspecialchars($event['venue_name']) ?> seating plan"
@@ -598,6 +601,7 @@ function cleanLabel(string $label): string
         .seatmap-modal-sub { font-size: 0.7rem; color: var(--pulse-muted); }
         .seatmap-modal-close { background: none; border: none; color: var(--pulse-muted); cursor: pointer; font-size: 1.1rem; padding: 2px; }
         .seatmap-modal-body { overflow-y: auto; flex: 1; background: #111; }
+        .seatmap-modal-body:focus { outline: 2px solid var(--pulse-accent); outline-offset: -2px; }
     </style>
     <script>
         function openSeatMap() { document.getElementById('seatMapModal').classList.add('open'); document.body.style.overflow = 'hidden'; }
@@ -605,7 +609,7 @@ function cleanLabel(string $label): string
         document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSeatMap(); });
     </script>
 
-    <div id="toast"
+    <div id="toast" role="status" aria-live="polite" aria-atomic="true"
         style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--pulse-surface);border:1px solid var(--pulse-border);padding:10px 22px;font-size:0.8rem;color:var(--pulse-white);opacity:0;transition:all 0.3s;z-index:9999;pointer-events:none;">
         Copied!
     </div>

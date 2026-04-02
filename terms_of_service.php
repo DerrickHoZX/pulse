@@ -80,7 +80,7 @@
 
                     <div class="terms-section fade-up">
                         <h2 class="terms-title">8. Contact</h2>
-                        <p>For any questions regarding these terms, please contact us at <a href="mailto:support@pulseevents.sg" style="color: var(--pulse-accent); text-decoration:none;">support@pulseevents.sg</a>.</p>
+                        <p>For any questions regarding these terms, please contact us at <a href="mailto:support@pulseevents.sg" style="color: var(--pulse-accent); text-decoration:underline;">support@pulseevents.sg</a>.</p>
                     </div>
 
                 </div>

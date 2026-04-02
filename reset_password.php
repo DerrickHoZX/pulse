@@ -106,7 +106,7 @@
                 </form>
 
                 <p style="text-align:center; margin-top:24px;">
-                    <a href="forgot_password.php" style="color: var(--pulse-muted); font-size:0.78rem; text-decoration:none;">
+                    <a href="forgot_password.php" style="color: var(--pulse-muted); font-size:0.78rem; text-decoration:underline;">
                         Request a new link
                     </a>
                 </p>

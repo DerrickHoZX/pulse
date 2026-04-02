@@ -12,7 +12,7 @@
             <div class="auth-card">
                 <h1>Create Account</h1>
                 <p style="color: var(--pulse-muted); font-size:0.85rem; margin-bottom: 32px; font-weight:300;">
-                    Already a member? <a href="login.php" style="color: var(--pulse-accent); text-decoration:none;">Sign in here</a>.
+                    Already a member? <a href="login.php" style="color: var(--pulse-accent); text-decoration:underline;">Sign in here</a>.
                 </p>
 
                 <?php if (isset($_GET['error'])): ?>
@@ -106,7 +106,7 @@
                     <div class="mb-4 form-check">
                         <input required type="checkbox" name="agree" id="agree" class="form-check-input">
                         <label class="form-check-label" for="agree">
-                            I agree to the <a href="terms_of_service.php" style="color:var(--pulse-accent); text-decoration:none;">Terms of Service</a>.
+                            I agree to the <a href="terms_of_service.php" style="color:var(--pulse-accent); text-decoration:underline;">Terms of Service</a>.
                         </label>
                     </div>
 

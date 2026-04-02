@@ -151,7 +151,7 @@
                                     </svg>
                                 </button>
                                 <div id="faq-a1" class="collapse faq-answer" data-bs-parent="#faqAccount">
-                                    Yes, a PULSE account is required to complete a booking. Registration is free and only takes a minute. You can <a href="register.php" style="color: var(--pulse-accent); text-decoration:none;">create an account here</a>.
+                                    Yes, a PULSE account is required to complete a booking. Registration is free and only takes a minute. You can <a href="register.php" style="color: var(--pulse-accent); text-decoration:underline;">create an account here</a>.
                                 </div>
                             </div>
 
@@ -175,7 +175,7 @@
                                     </svg>
                                 </button>
                                 <div id="faq-a3" class="collapse faq-answer" data-bs-parent="#faqAccount">
-                                    If you cannot sign in, use the help link on the Sign In page or <a href="contact.php" style="color: var(--pulse-accent); text-decoration:none;">contact support</a> and we will help you recover access.
+                                    If you cannot sign in, use the help link on the Sign In page or <a href="contact.php" style="color: var(--pulse-accent); text-decoration:underline;">contact support</a> and we will help you recover access.
                                 </div>
                             </div>
 
