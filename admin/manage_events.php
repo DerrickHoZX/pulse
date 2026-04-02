@@ -5,13 +5,18 @@ $basePath = "../";
 
 $conn = getDBConnection();
 
-// Fetch all events joined with venue name
+// Sorting
+$allowed_sorts = ['event_id', 'title', 'event_date', 'category', 'is_active'];
+$sort = in_array($_GET['sort'] ?? '', $allowed_sorts) ? $_GET['sort'] : 'event_date';
+$dir  = ($_GET['dir'] ?? 'asc') === 'desc' ? 'desc' : 'asc';
+$next_dir = $dir === 'asc' ? 'desc' : 'asc';
+
 $result = $conn->query("
     SELECT e.event_id, e.title, e.event_date, e.category, e.is_active,
            v.name AS venue_name
     FROM events e
     LEFT JOIN venues v ON e.venue_id = v.venue_id
-    ORDER BY e.event_date DESC
+    ORDER BY e.$sort $dir
 ");
 $events = $result->fetch_all(MYSQLI_ASSOC);
 $conn->close();
@@ -85,12 +90,37 @@ $conn->close();
                 <table class="table admin-table align-middle mb-0">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Event Name</th>
-                            <th>Date</th>
+                            <th>
+                                <a href="manage_events.php?sort=event_id&dir=<?= $sort === 'event_id' ? $next_dir : 'asc' ?>"
+                                style="color:inherit;text-decoration:none;">
+                                    ID <?= $sort === 'event_id' ? ($dir === 'asc' ? '↑' : '↓') : '↕' ?>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="manage_events.php?sort=title&dir=<?= $sort === 'title' ? $next_dir : 'asc' ?>"
+                                style="color:inherit;text-decoration:none;">
+                                    Event Name <?= $sort === 'title' ? ($dir === 'asc' ? '↑' : '↓') : '↕' ?>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="manage_events.php?sort=event_date&dir=<?= $sort === 'event_date' ? $next_dir : 'asc' ?>"
+                                style="color:inherit;text-decoration:none;">
+                                    Date <?= $sort === 'event_date' ? ($dir === 'asc' ? '↑' : '↓') : '↕' ?>
+                                </a>
+                            </th>
                             <th>Venue</th>
-                            <th>Category</th>
-                            <th>Status</th>
+                            <th>
+                                <a href="manage_events.php?sort=category&dir=<?= $sort === 'category' ? $next_dir : 'asc' ?>"
+                                style="color:inherit;text-decoration:none;">
+                                    Category <?= $sort === 'category' ? ($dir === 'asc' ? '↑' : '↓') : '↕' ?>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="manage_events.php?sort=is_active&dir=<?= $sort === 'is_active' ? $next_dir : 'asc' ?>"
+                                style="color:inherit;text-decoration:none;">
+                                    Status <?= $sort === 'is_active' ? ($dir === 'asc' ? '↑' : '↓') : '↕' ?>
+                                </a>
+                            </th>
                             <th>Actions</th>
                         </tr>
                     </thead>
