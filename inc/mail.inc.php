@@ -104,3 +104,32 @@ function buildPasswordResetMail(string $fname, string $resetLink): array {
 
     return ['subject' => $subject, 'html' => $html, 'text' => $text];
 }
+function buildAdminOtpMail(string $fname, string $otp): array {
+    $subject = 'Your PULSE Admin Verification Code';
+
+    $html = '
+        <div style="font-family:Arial,sans-serif;background:#0d0d0d;color:#f8f4ee;padding:24px;">
+            <div style="max-width:640px;margin:0 auto;background:#171717;border:1px solid #2a2a2a;padding:28px;">
+                <h1 style="margin:0 0 12px;font-size:24px;">Admin Sign-In Verification</h1>
+                <p style="margin:0 0 20px;color:#b8b0a7;">
+                    Hi ' . htmlspecialchars($fname) . ', use the code below to complete your admin sign-in.
+                    It expires in <strong style="color:#f8f4ee;">5 minutes</strong>.
+                </p>
+                <div style="padding:28px;border:1px solid #2a2a2a;background:#101010;margin-bottom:20px;text-align:center;">
+                    <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#9d96ff;margin-bottom:14px;">
+                        Verification Code
+                    </div>
+                    <div style="font-size:42px;font-weight:700;letter-spacing:0.4em;color:#f8f4ee;font-family:monospace;">
+                        ' . htmlspecialchars($otp) . '
+                    </div>
+                </div>
+                <p style="margin:0;color:#b8b0a7;font-size:13px;">
+                    If you did not attempt to sign in to the PULSE admin panel, you can safely ignore this email.
+                </p>
+            </div>
+        </div>';
+
+    $text = "Hi {$fname},\n\nYour PULSE admin verification code is:\n\n  {$otp}\n\nIt expires in 5 minutes.\n\nIf you did not request this, ignore this email.";
+
+    return ['subject' => $subject, 'html' => $html, 'text' => $text];
+}

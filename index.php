@@ -219,27 +219,6 @@ $conn->close();
 
                 <div class="venues-carousel-dots" id="venuesDots"></div>
             </section>
-
-            <div class="container-fluid px-5 pb-5 fade-up">
-                <div class="newsletter-box">
-                    <div class="row align-items-center g-5">
-                        <div class="col-lg-5">
-                            <span class="section-label">Stay in the Loop</span>
-                            <h2 class="section-title">Never Miss<br><em>a Beat</em></h2>
-                            <p class="mt-3" style="color: var(--pulse-muted); font-weight:300; font-size:0.9rem; line-height:1.7;">
-                                Get first access to presales, exclusive offers, and event announcements &mdash; straight to your inbox.
-                            </p>
-                        </div>
-                        <div class="col-lg-7">
-                            <div class="newsletter-form-row">
-                                <input type="email" placeholder="Your email address">
-                                <button type="button">Subscribe</button>
-                            </div>
-                            <p class="newsletter-note">By subscribing you agree to our Privacy Policy. No spam &mdash; unsubscribe any time.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </main>
 
         <!-- Venue carousel fix -->
