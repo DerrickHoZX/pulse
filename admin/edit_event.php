@@ -2,6 +2,7 @@
 include "../inc/admin_check.inc.php";
 require_once "../inc/db.inc.php";
 $basePath = "../";
+
 function uploadEventImage(array $file, string $type): string
 {
     if (empty($file['name']) || ($file['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
@@ -33,6 +34,7 @@ function uploadEventImage(array $file, string $type): string
 
     return 'uploads/events/' . $filename;
 }
+
 $conn = getDBConnection();
 
 $event_id = intval($_GET['event_id'] ?? 0);
@@ -40,6 +42,7 @@ if (!$event_id) {
     header("Location: manage_events.php");
     exit;
 }
+
 // Fetch existing images early so POST can reuse them if no new image is uploaded
 $existing_imgs = [];
 $img_res = $conn->prepare("SELECT image_type, image_path FROM event_images WHERE event_id = ? ORDER BY sort_order ASC");
@@ -51,6 +54,7 @@ foreach ($img_res->get_result()->fetch_all(MYSQLI_ASSOC) as $row) {
     }
 }
 $img_res->close();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $conn->begin_transaction();
 
@@ -134,8 +138,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $price = floatval($sec_prices[$i] ?? 0);
             $totalSeats = intval($sec_seats[$i] ?? 0);
 
-            if (!$label)
+            if (!$label) {
                 continue;
+            }
 
             $upd->bind_param('sdiii', $label, $price, $totalSeats, $sec_id, $event_id);
             if (!$upd->execute()) {
@@ -190,8 +195,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $label = trim($label);
             $price = floatval($new_prices[$i] ?? 0);
             $totalSeats = intval($new_seats[$i] ?? 0);
-            if (!$label)
+
+            if (!$label) {
                 continue;
+            }
 
             $ins->bind_param('isdi', $event_id, $label, $price, $totalSeats);
             if (!$ins->execute()) {
@@ -210,9 +217,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $rowLabel = chr(65 + intval(($r - 26) / 26)) . chr(65 + (($r - 26) % 26));
                 }
                 for ($s = 1; $s <= $seatsPerRow; $s++) {
-                    if ($seatCount >= $totalSeats)
+                    if ($seatCount >= $totalSeats) {
                         break;
-                    $seat->bind_param('isi', $sec_id, $rowLabel, $s);
+                    }
+                    $seat->bind_param('isi', $new_sec_id, $rowLabel, $s);
                     $seat->execute();
                     $seatCount++;
                 }
@@ -262,6 +270,21 @@ $conn->close();
 <head>
     <title>PULSE Admin - Edit Event</title>
     <?php include "../inc/head.inc.php"; ?>
+
+    <style>
+        .btn-outline-danger.remove-section {
+            color: #fff !important;
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+        }
+
+        .btn-outline-danger.remove-section:hover,
+        .btn-outline-danger.remove-section:focus {
+            color: #fff !important;
+            background-color: #bb2d3b !important;
+            border-color: #bb2d3b !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -277,32 +300,32 @@ $conn->close();
         <div class="admin-form-card">
             <form method="POST" enctype="multipart/form-data" action="edit_event.php?event_id=<?= $event_id ?>">
                 <div class="mb-3">
-                    <label class="form-label admin-form-label">Event Name</label>
-                    <input type="text" name="title" class="form-control admin-form-control"
+                    <label for="title" class="form-label admin-form-label">Event Name</label>
+                    <input type="text" id="title" name="title" class="form-control admin-form-control"
                         value="<?= htmlspecialchars($event['title']) ?>" required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label admin-form-label">Category</label>
-                    <input type="text" name="category" class="form-control admin-form-control"
+                    <label for="category" class="form-label admin-form-label">Category</label>
+                    <input type="text" id="category" name="category" class="form-control admin-form-control"
                         value="<?= htmlspecialchars($event['category'] ?? '') ?>">
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label admin-form-label">Date</label>
-                    <input type="date" name="event_date" class="form-control admin-form-control"
+                    <label for="event_date" class="form-label admin-form-label">Date</label>
+                    <input type="date" id="event_date" name="event_date" class="form-control admin-form-control"
                         value="<?= htmlspecialchars($event['event_date']) ?>" required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label admin-form-label">Time</label>
-                    <input type="time" name="event_time" class="form-control admin-form-control"
+                    <label for="event_time" class="form-label admin-form-label">Time</label>
+                    <input type="time" id="event_time" name="event_time" class="form-control admin-form-control"
                         value="<?= htmlspecialchars($event['event_time'] ?? '') ?>">
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label admin-form-label">Venue</label>
-                    <select name="venue_id" class="form-control admin-form-control">
+                    <label for="venue_id" class="form-label admin-form-label">Venue</label>
+                    <select id="venue_id" name="venue_id" class="form-control admin-form-control">
                         <option value="">-- Select Venue --</option>
                         <?php foreach ($venues as $venue): ?>
                             <option value="<?= $venue['venue_id'] ?>" <?= $event['venue_id'] == $venue['venue_id'] ? 'selected' : '' ?>>
@@ -313,17 +336,19 @@ $conn->close();
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label admin-form-label">Description</label>
-                    <textarea name="description" rows="5"
+                    <label for="description" class="form-label admin-form-label">Description</label>
+                    <textarea id="description" name="description" rows="5"
                         class="form-control admin-form-control"><?= htmlspecialchars($event['description'] ?? '') ?></textarea>
                 </div>
 
-                <!-- Event Images -->
                 <div class="mb-4">
                     <label class="form-label admin-form-label">Event Images</label>
+
                     <div class="mb-2">
-                        <label class="form-label admin-form-label" style="font-size:0.78rem;">Banner Image</label>
-                        <input type="file" name="img_banner" accept="image/*" class="form-control admin-form-control">
+                        <label for="img_banner" class="form-label admin-form-label" style="font-size:0.78rem;">Banner
+                            Image</label>
+                        <input type="file" id="img_banner" name="img_banner" accept="image/*"
+                            class="form-control admin-form-control">
                         <?php if (!empty($existing_imgs['banner'])): ?>
                             <small style="color:var(--pulse-muted);display:block;margin-top:6px;">
                                 Current: <?= htmlspecialchars($existing_imgs['banner']) ?>
@@ -331,10 +356,12 @@ $conn->close();
                         <?php endif; ?>
                         <small style="color:var(--pulse-muted);">Leave blank to keep the current banner image.</small>
                     </div>
+
                     <div class="mb-2">
-                        <label class="form-label admin-form-label" style="font-size:0.78rem;">Poster / Thumbnail
-                            Image</label>
-                        <input type="file" name="img_poster" accept="image/*" class="form-control admin-form-control">
+                        <label for="img_poster" class="form-label admin-form-label" style="font-size:0.78rem;">Poster /
+                            Thumbnail Image</label>
+                        <input type="file" id="img_poster" name="img_poster" accept="image/*"
+                            class="form-control admin-form-control">
                         <?php if (!empty($existing_imgs['poster'])): ?>
                             <small style="color:var(--pulse-muted);display:block;margin-top:6px;">
                                 Current: <?= htmlspecialchars($existing_imgs['poster']) ?>
@@ -342,9 +369,12 @@ $conn->close();
                         <?php endif; ?>
                         <small style="color:var(--pulse-muted);">Leave blank to keep the current poster image.</small>
                     </div>
+
                     <div class="mb-2">
-                        <label class="form-label admin-form-label" style="font-size:0.78rem;">Seat Map Image</label>
-                        <input type="file" name="img_seatmap" accept="image/*" class="form-control admin-form-control">
+                        <label for="img_seatmap" class="form-label admin-form-label" style="font-size:0.78rem;">Seat Map
+                            Image</label>
+                        <input type="file" id="img_seatmap" name="img_seatmap" accept="image/*"
+                            class="form-control admin-form-control">
                         <?php if (!empty($existing_imgs['seatmap'])): ?>
                             <small style="color:var(--pulse-muted);display:block;margin-top:6px;">
                                 Current: <?= htmlspecialchars($existing_imgs['seatmap']) ?>
@@ -360,20 +390,33 @@ $conn->close();
                     <label class="form-check-label admin-form-label" for="is_active">Active (visible to public)</label>
                 </div>
 
-                <!-- Existing Sections -->
                 <div class="mb-3">
                     <label class="form-label admin-form-label">Seat Sections & Pricing</label>
                     <?php if ($sections): ?>
-                        <?php foreach ($sections as $sec): ?>
+                        <?php foreach ($sections as $i => $sec): ?>
                             <div class="d-flex gap-2 mb-2 align-items-center">
                                 <input type="hidden" name="section_id[]" value="<?= $sec['section_id'] ?>">
-                                <input type="text" name="section_label[]" class="form-control admin-form-control"
-                                    value="<?= htmlspecialchars($sec['label']) ?>" placeholder="Section" style="flex:2;">
-                                <input type="number" step="0.01" min="0" name="section_price[]"
-                                    class="form-control admin-form-control" value="<?= $sec['price'] ?>"
-                                    placeholder="Price (S$)" style="flex:1;">
-                                <input type="number" min="0" name="section_seats[]" class="form-control admin-form-control"
-                                    value="<?= $sec['total_seats'] ?>" placeholder="Seats" style="flex:1;">
+
+                                <div style="flex:2;">
+                                    <label for="section_label_<?= $i ?>" class="visually-hidden">Section label</label>
+                                    <input type="text" id="section_label_<?= $i ?>" name="section_label[]"
+                                        class="form-control admin-form-control" value="<?= htmlspecialchars($sec['label']) ?>"
+                                        placeholder="Section">
+                                </div>
+
+                                <div style="flex:1;">
+                                    <label for="section_price_<?= $i ?>" class="visually-hidden">Section price</label>
+                                    <input type="number" id="section_price_<?= $i ?>" step="0.01" min="0" name="section_price[]"
+                                        class="form-control admin-form-control" value="<?= $sec['price'] ?>"
+                                        placeholder="Price (S$)">
+                                </div>
+
+                                <div style="flex:1;">
+                                    <label for="section_seats_<?= $i ?>" class="visually-hidden">Number of seats</label>
+                                    <input type="number" id="section_seats_<?= $i ?>" min="0" name="section_seats[]"
+                                        class="form-control admin-form-control" value="<?= $sec['total_seats'] ?>"
+                                        placeholder="Seats">
+                                </div>
                             </div>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -381,7 +424,6 @@ $conn->close();
                     <?php endif; ?>
                 </div>
 
-                <!-- New Sections -->
                 <div class="mb-3">
                     <label class="form-label admin-form-label">Add New Sections</label>
                     <div id="new-sections-wrapper"></div>
@@ -402,17 +444,31 @@ $conn->close();
 
     <script>
         const newWrapper = document.getElementById('new-sections-wrapper');
+        let newSectionIndex = 0;
 
         document.getElementById('add-section').addEventListener('click', () => {
             const row = document.createElement('div');
             row.className = 'd-flex gap-2 mb-2 align-items-center';
             row.innerHTML = `
-                <input type="text" name="new_section_label[]" class="form-control admin-form-control" placeholder="Section (e.g. CAT 3)" style="flex:2;">
-                <input type="number" step="0.01" min="0" name="new_section_price[]" class="form-control admin-form-control" placeholder="Price (S$)" style="flex:1;">
-                <input type="number" min="0" name="new_section_seats[]" class="form-control admin-form-control" placeholder="Seats" style="flex:1;">
+                <div style="flex:2;">
+                    <label for="new_section_label_${newSectionIndex}" class="visually-hidden">Section label</label>
+                    <input type="text" id="new_section_label_${newSectionIndex}" name="new_section_label[]" class="form-control admin-form-control" placeholder="Section (e.g. CAT 3)">
+                </div>
+
+                <div style="flex:1;">
+                    <label for="new_section_price_${newSectionIndex}" class="visually-hidden">Section price</label>
+                    <input type="number" id="new_section_price_${newSectionIndex}" step="0.01" min="0" name="new_section_price[]" class="form-control admin-form-control" placeholder="Price (S$)">
+                </div>
+
+                <div style="flex:1;">
+                    <label for="new_section_seats_${newSectionIndex}" class="visually-hidden">Number of seats</label>
+                    <input type="number" id="new_section_seats_${newSectionIndex}" min="0" name="new_section_seats[]" class="form-control admin-form-control" placeholder="Seats">
+                </div>
+
                 <button type="button" class="btn btn-outline-danger btn-sm remove-section">✕</button>
             `;
             newWrapper.appendChild(row);
+            newSectionIndex++;
         });
 
         newWrapper.addEventListener('click', (e) => {
