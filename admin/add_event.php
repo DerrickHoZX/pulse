@@ -118,8 +118,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $rowLabel = chr(65 + intval(($r - 26) / 26)) . chr(65 + (($r - 26) % 26));
                 }
                 for ($s = 1; $s <= $seatsPerRow; $s++) {
-                    if ($seatCount >= $totalSeats)
+                    if ($seatCount >= $totalSeats) {
                         break;
+                    }
                     $seat->bind_param('isi', $section_id, $rowLabel, $s);
                     $seat->execute();
                     $seatCount++;
@@ -151,6 +152,20 @@ $conn->close();
 <head>
     <title>PULSE Admin - Add Event</title>
     <?php include "../inc/head.inc.php"; ?>
+
+    <style>
+        .btn-outline-danger.remove-section {
+            color: #b02a37;
+            border-color: #b02a37;
+        }
+
+        .btn-outline-danger.remove-section:hover,
+        .btn-outline-danger.remove-section:focus {
+            color: #fff;
+            background-color: #b02a37;
+            border-color: #b02a37;
+        }
+    </style>
 </head>
 
 <body>
@@ -171,28 +186,29 @@ $conn->close();
             <form method="POST" enctype="multipart/form-data" action="add_event.php">
 
                 <div class="mb-3">
-                    <label class="form-label admin-form-label">Event Name</label>
-                    <input type="text" name="title" class="form-control admin-form-control" required>
+                    <label for="title" class="form-label admin-form-label">Event Name</label>
+                    <input type="text" id="title" name="title" class="form-control admin-form-control" required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label admin-form-label">Category</label>
-                    <input type="text" name="category" class="form-control admin-form-control">
+                    <label for="category" class="form-label admin-form-label">Category</label>
+                    <input type="text" id="category" name="category" class="form-control admin-form-control">
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label admin-form-label">Date</label>
-                    <input type="date" name="event_date" class="form-control admin-form-control" required>
+                    <label for="event_date" class="form-label admin-form-label">Date</label>
+                    <input type="date" id="event_date" name="event_date" class="form-control admin-form-control"
+                        required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label admin-form-label">Time</label>
-                    <input type="time" name="event_time" class="form-control admin-form-control">
+                    <label for="event_time" class="form-label admin-form-label">Time</label>
+                    <input type="time" id="event_time" name="event_time" class="form-control admin-form-control">
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label admin-form-label">Venue</label>
-                    <select name="venue_id" class="form-control admin-form-control">
+                    <label for="venue_id" class="form-label admin-form-label">Venue</label>
+                    <select id="venue_id" name="venue_id" class="form-control admin-form-control">
                         <option value="">-- Select Venue --</option>
                         <?php foreach ($venues as $venue): ?>
                             <option value="<?= $venue['venue_id'] ?>">
@@ -203,49 +219,70 @@ $conn->close();
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label admin-form-label">Description</label>
-                    <textarea name="description" rows="5" class="form-control admin-form-control"></textarea>
+                    <label for="description" class="form-label admin-form-label">Description</label>
+                    <textarea id="description" name="description" rows="5"
+                        class="form-control admin-form-control"></textarea>
                 </div>
-                <!-- Event Images -->
+
                 <div class="mb-4">
                     <label class="form-label admin-form-label">Event Images</label>
+
                     <div class="mb-2">
-                        <label class="form-label admin-form-label" style="font-size:0.78rem;">Banner Image</label>
-                        <input type="file" name="img_banner" accept="image/*" class="form-control admin-form-control">
+                        <label for="img_banner" class="form-label admin-form-label" style="font-size:0.78rem;">Banner
+                            Image</label>
+                        <input type="file" id="img_banner" name="img_banner" accept="image/*"
+                            class="form-control admin-form-control">
                         <small style="color:var(--pulse-muted);">Main blurred background on the event detail
                             page.</small>
                     </div>
+
                     <div class="mb-2">
-                        <label class="form-label admin-form-label" style="font-size:0.78rem;">Poster / Thumbnail
-                            Image</label>
-                        <input type="file" name="img_poster" accept="image/*" class="form-control admin-form-control">
+                        <label for="img_poster" class="form-label admin-form-label" style="font-size:0.78rem;">Poster /
+                            Thumbnail Image</label>
+                        <input type="file" id="img_poster" name="img_poster" accept="image/*"
+                            class="form-control admin-form-control">
                         <small style="color:var(--pulse-muted);">Portrait image shown on the event card and detail
                             page.</small>
                     </div>
+
                     <div class="mb-2">
-                        <label class="form-label admin-form-label" style="font-size:0.78rem;">Seat Map Image</label>
-                        <input type="file" name="img_seatmap" accept="image/*" class="form-control admin-form-control">
+                        <label for="img_seatmap" class="form-label admin-form-label" style="font-size:0.78rem;">Seat Map
+                            Image</label>
+                        <input type="file" id="img_seatmap" name="img_seatmap" accept="image/*"
+                            class="form-control admin-form-control">
                         <small style="color:var(--pulse-muted);">Optional. Enables "View Seat Map" button on event
                             page.</small>
                     </div>
                 </div>
+
                 <div class="mb-3 form-check">
                     <input type="checkbox" name="is_active" class="form-check-input" id="is_active" checked>
                     <label class="form-check-label admin-form-label" for="is_active">Active (visible to public)</label>
                 </div>
 
-                <!-- Seat Sections -->
                 <div class="mb-4">
                     <label class="form-label admin-form-label">Seat Categories & Pricing</label>
                     <div id="sections-wrapper">
                         <div class="section-row d-flex gap-2 mb-2 align-items-center">
-                            <input type="text" name="section_label[]" class="form-control admin-form-control"
-                                placeholder="e.g. CAT 1 - Floor" style="flex:2;">
-                            <input type="number" step="0.01" min="0" name="section_price[]"
-                                class="form-control admin-form-control" placeholder="Price (S$)" style="flex:1;">
-                            <input type="number" min="0" name="section_seats[]" class="form-control admin-form-control"
-                                placeholder="No. of Seats" style="flex:1;">
-                            <button type="button" class="btn btn-outline-danger btn-sm remove-section"
+                            <div style="flex:2;">
+                                <label class="visually-hidden" for="section_label_0">Seat category label</label>
+                                <input type="text" id="section_label_0" name="section_label[]"
+                                    class="form-control admin-form-control" placeholder="e.g. CAT 1 - Floor">
+                            </div>
+
+                            <div style="flex:1;">
+                                <label class="visually-hidden" for="section_price_0">Seat category price</label>
+                                <input type="number" id="section_price_0" step="0.01" min="0" name="section_price[]"
+                                    class="form-control admin-form-control" placeholder="Price (S$)">
+                            </div>
+
+                            <div style="flex:1;">
+                                <label class="visually-hidden" for="section_seats_0">Number of seats</label>
+                                <input type="number" id="section_seats_0" min="0" name="section_seats[]"
+                                    class="form-control admin-form-control" placeholder="No. of Seats">
+                            </div>
+
+                            <button type="button" class="btn btn-danger btn-sm remove-section">
                                 style="white-space:nowrap;">✕ Remove</button>
                         </div>
                     </div>
@@ -266,17 +303,31 @@ $conn->close();
 
     <script>
         const wrapper = document.getElementById('sections-wrapper');
+        let sectionIndex = 1;
 
         document.getElementById('add-section').addEventListener('click', () => {
             const row = document.createElement('div');
             row.className = 'section-row d-flex gap-2 mb-2 align-items-center';
             row.innerHTML = `
-                <input type="text" name="section_label[]" class="form-control admin-form-control" placeholder="e.g. CAT 2 - Lower Bowl" style="flex:2;">
-                <input type="number" step="0.01" min="0" name="section_price[]" class="form-control admin-form-control" placeholder="Price (S$)" style="flex:1;">
-                <input type="number" min="0" name="section_seats[]" class="form-control admin-form-control" placeholder="No. of Seats" style="flex:1;">
+                <div style="flex:2;">
+                    <label class="visually-hidden" for="section_label_${sectionIndex}">Seat category label</label>
+                    <input type="text" id="section_label_${sectionIndex}" name="section_label[]" class="form-control admin-form-control" placeholder="e.g. CAT 2 - Lower Bowl">
+                </div>
+
+                <div style="flex:1;">
+                    <label class="visually-hidden" for="section_price_${sectionIndex}">Seat category price</label>
+                    <input type="number" id="section_price_${sectionIndex}" step="0.01" min="0" name="section_price[]" class="form-control admin-form-control" placeholder="Price (S$)">
+                </div>
+
+                <div style="flex:1;">
+                    <label class="visually-hidden" for="section_seats_${sectionIndex}">Number of seats</label>
+                    <input type="number" id="section_seats_${sectionIndex}" min="0" name="section_seats[]" class="form-control admin-form-control" placeholder="No. of Seats">
+                </div>
+
                 <button type="button" class="btn btn-outline-danger btn-sm remove-section" style="white-space:nowrap;">✕ Remove</button>
             `;
             wrapper.appendChild(row);
+            sectionIndex++;
         });
 
         wrapper.addEventListener('click', (e) => {

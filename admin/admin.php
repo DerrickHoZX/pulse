@@ -194,7 +194,7 @@ $conn->close();
             </div>
 
             <div class="card border-0 shadow-sm rounded-4 p-4">
-                <div class="table-responsive">
+                <div class="table-responsive" tabindex="0">
                     <table class="table admin-table align-middle mb-0">
                         <thead>
                             <tr>
